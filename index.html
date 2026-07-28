@@ -1,0 +1,766 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#17324d" />
+  <title>水陸小高手｜生字語詞預習站</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #17324d;
+      --ink-soft: #506278;
+      --paper: #fffaf0;
+      --paper-strong: #fffdf8;
+      --aqua: #16a7a0;
+      --aqua-deep: #087f83;
+      --sky: #c8f0ef;
+      --coral: #f37562;
+      --sun: #ffc65b;
+      --leaf: #b7df9b;
+      --line: #dfe8e2;
+      --shadow: 0 20px 50px rgba(23, 50, 77, .13);
+      --radius-lg: 30px;
+      --radius-md: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { min-width: 320px; background: var(--paper); }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 9% 6%, rgba(255, 198, 91, .38) 0 7%, transparent 23%),
+        radial-gradient(circle at 94% 84%, rgba(22, 167, 160, .17) 0 8%, transparent 24%),
+        linear-gradient(135deg, #fffaf0 0%, #f1fbf8 100%);
+      font-family: "Noto Sans TC", "PingFang TC", sans-serif;
+    }
+
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+
+    .page-shell {
+      position: relative;
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 26px 0 48px;
+      overflow: hidden;
+    }
+
+    .page-shell::before,
+    .page-shell::after {
+      position: fixed;
+      z-index: -1;
+      display: block;
+      width: 170px;
+      height: 170px;
+      border-radius: 50%;
+      content: "";
+      opacity: .42;
+      filter: blur(2px);
+    }
+
+    .page-shell::before { top: 8%; left: -70px; background: var(--leaf); }
+    .page-shell::after { right: -80px; bottom: 5%; background: var(--sun); }
+
+    .site-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 48px;
+      height: 48px;
+      place-items: center;
+      border: 3px solid var(--ink);
+      border-radius: 17px 17px 17px 5px;
+      background: var(--sun);
+      box-shadow: 4px 4px 0 var(--ink);
+      font-family: Nunito, sans-serif;
+      font-size: 23px;
+      font-weight: 900;
+    }
+
+    .brand-copy { line-height: 1.18; }
+    .brand-copy strong { display: block; font-size: 18px; font-weight: 900; letter-spacing: .04em; }
+    .brand-copy span { color: var(--ink-soft); font-size: 12px; }
+
+    .teacher-note {
+      color: var(--aqua-deep);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .06em;
+    }
+
+    .screen { display: none; animation: appear .45s ease both; }
+    .screen.active { display: block; }
+
+    @keyframes appear {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .start-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(340px, .92fr);
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .hero-card,
+    .login-card,
+    .quiz-card,
+    .result-card {
+      border: 1px solid rgba(255, 255, 255, .86);
+      border-radius: var(--radius-lg);
+      background: rgba(255, 253, 248, .88);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card {
+      position: relative;
+      min-height: 570px;
+      overflow: hidden;
+      padding: clamp(30px, 5vw, 60px);
+      background:
+        linear-gradient(145deg, rgba(200, 240, 239, .97), rgba(255, 253, 248, .96) 62%),
+        var(--paper-strong);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 22px;
+      color: var(--aqua-deep);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: .11em;
+    }
+
+    .eyebrow::before {
+      width: 22px;
+      height: 5px;
+      border-radius: 99px;
+      background: var(--coral);
+      content: "";
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    .hero-card h1 {
+      max-width: 650px;
+      margin-bottom: 18px;
+      font-size: clamp(42px, 7vw, 76px);
+      font-weight: 900;
+      letter-spacing: -.07em;
+      line-height: 1.06;
+    }
+
+    .hero-card h1 em {
+      color: var(--coral);
+      font-style: normal;
+      text-decoration: underline;
+      text-decoration-color: var(--sun);
+      text-decoration-thickness: 8px;
+      text-underline-offset: 8px;
+    }
+
+    .hero-description {
+      max-width: 510px;
+      margin-bottom: 0;
+      color: var(--ink-soft);
+      font-size: 17px;
+      line-height: 1.85;
+    }
+
+    .route-illustration {
+      position: absolute;
+      right: 5%;
+      bottom: -3%;
+      width: min(68%, 440px);
+      min-width: 290px;
+      transform: rotate(-3deg);
+    }
+
+    .route-illustration svg { display: block; width: 100%; height: auto; }
+
+    .login-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 570px;
+      padding: 32px;
+    }
+
+    .login-card h2 { margin-bottom: 10px; font-size: 28px; letter-spacing: -.04em; }
+    .login-card .lead { margin-bottom: 30px; color: var(--ink-soft); line-height: 1.7; }
+
+    .field-label { display: block; margin-bottom: 9px; font-size: 14px; font-weight: 900; }
+
+    .code-input {
+      width: 100%;
+      padding: 15px 16px;
+      border: 2px solid var(--line);
+      border-radius: 14px;
+      outline: none;
+      background: #fff;
+      color: var(--ink);
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: .06em;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    .code-input:focus { border-color: var(--aqua); box-shadow: 0 0 0 4px rgba(22, 167, 160, .14); }
+    .code-help { margin: 9px 0 0; color: var(--ink-soft); font-size: 13px; line-height: 1.6; }
+
+    .primary-button,
+    .secondary-button {
+      min-height: 52px;
+      border-radius: 14px;
+      padding: 12px 20px;
+      font-weight: 900;
+      transition: transform .18s, box-shadow .18s, background .18s;
+    }
+
+    .primary-button {
+      width: 100%;
+      border: 2px solid var(--ink);
+      background: var(--ink);
+      color: #fff;
+      box-shadow: 0 5px 0 #0c1d2b;
+    }
+
+    .primary-button:hover,
+    .primary-button:focus-visible { transform: translateY(-2px); background: var(--aqua-deep); box-shadow: 0 7px 0 #07585e; }
+    .primary-button:active { transform: translateY(2px); box-shadow: 0 2px 0 #0c1d2b; }
+
+    .secondary-button { border: 2px solid var(--ink); background: transparent; color: var(--ink); }
+    .secondary-button:hover, .secondary-button:focus-visible { background: var(--sky); }
+
+    .login-error { min-height: 22px; margin: 12px 0 2px; color: var(--coral); font-size: 13px; font-weight: 700; }
+
+    .preview-strip {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 7px;
+      margin-top: 28px;
+    }
+
+    .preview-word {
+      padding: 11px 5px;
+      border-radius: 12px;
+      background: #f2f6e9;
+      color: var(--aqua-deep);
+      font-size: 12px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .login-footer { margin-top: 34px; color: var(--ink-soft); font-size: 12px; line-height: 1.7; }
+
+    .quiz-topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+    .quiz-title { margin: 0; font-size: 25px; letter-spacing: -.04em; }
+    .student-code { color: var(--ink-soft); font-size: 14px; font-weight: 700; }
+
+    .progress-track { height: 12px; overflow: hidden; border-radius: 99px; background: #dceae7; }
+    .progress-value { width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--aqua), var(--sun)); transition: width .35s ease; }
+
+    .quiz-card { max-width: 900px; margin: 0 auto; padding: clamp(22px, 4vw, 42px); }
+    .question-meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+    .question-number { color: var(--aqua-deep); font-family: Nunito, sans-serif; font-size: 15px; font-weight: 900; letter-spacing: .08em; }
+    .question-kind { padding: 7px 11px; border-radius: 99px; background: #fff0d0; color: #8f5c05; font-size: 12px; font-weight: 900; }
+    .question-title { margin-bottom: 24px; font-size: clamp(23px, 4vw, 34px); letter-spacing: -.04em; line-height: 1.35; }
+
+    .visual-stage {
+      display: grid;
+      min-height: 230px;
+      margin-bottom: 24px;
+      place-items: center;
+      overflow: hidden;
+      border: 2px solid #e1efec;
+      border-radius: 22px;
+      background: linear-gradient(150deg, #eaf9f5, #fff8e7);
+    }
+
+    .visual-stage svg { width: min(100%, 400px); height: 220px; }
+
+    .character-visual {
+      display: grid;
+      width: 170px;
+      height: 170px;
+      place-items: center;
+      border: 5px solid var(--ink);
+      border-radius: 48% 52% 45% 55%;
+      background: var(--sun);
+      box-shadow: 9px 9px 0 var(--coral);
+      font-family: "Noto Sans TC", sans-serif;
+      font-size: 94px;
+      font-weight: 900;
+    }
+
+    .choice-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .answer-option {
+      min-height: 70px;
+      border: 2px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+      color: var(--ink);
+      font-size: 23px;
+      font-weight: 900;
+      transition: transform .16s, border-color .16s, background .16s;
+    }
+
+    .answer-option:hover:not(:disabled), .answer-option:focus-visible:not(:disabled) { transform: translateY(-3px); border-color: var(--aqua); background: #edfbf7; }
+    .answer-option:disabled { cursor: default; opacity: .72; }
+    .answer-option.is-correct { border-color: var(--aqua); background: #dff7ee; color: var(--aqua-deep); opacity: 1; }
+    .answer-option.is-wrong { border-color: var(--coral); background: #fff0ed; color: #a94f42; opacity: 1; }
+
+    .feedback {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 73px;
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-radius: 16px;
+      background: #f5f6f0;
+      color: var(--ink-soft);
+      line-height: 1.65;
+    }
+
+    .feedback strong { display: block; color: var(--ink); font-size: 16px; }
+    .feedback p { margin: 0; font-size: 14px; }
+    .feedback.good { background: #e1f7ed; }
+    .feedback.needs { background: #fff0df; }
+    .feedback .next-button { flex: 0 0 auto; min-height: 42px; padding: 8px 16px; border: 0; border-radius: 11px; background: var(--ink); color: #fff; font-size: 14px; font-weight: 900; }
+
+    .result-card { max-width: 850px; margin: 0 auto; padding: clamp(25px, 5vw, 50px); text-align: center; }
+    .result-kicker { margin-bottom: 8px; color: var(--aqua-deep); font-size: 14px; font-weight: 900; letter-spacing: .1em; }
+    .result-card h2 { margin-bottom: 4px; font-size: clamp(32px, 6vw, 52px); letter-spacing: -.06em; }
+    .result-copy { margin-bottom: 26px; color: var(--ink-soft); }
+    .score-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 28px; }
+    .score-cell { padding: 17px 10px; border-radius: 16px; background: #f0f7f1; }
+    .score-cell strong { display: block; font-family: Nunito, sans-serif; font-size: 31px; line-height: 1; }
+    .score-cell span { display: block; margin-top: 8px; color: var(--ink-soft); font-size: 12px; font-weight: 700; }
+    .score-cell.total { background: #fff0d0; }
+    .result-details { margin: 0 0 28px; overflow: hidden; border: 1px solid var(--line); border-radius: 15px; background: #fff; text-align: left; }
+    .result-details table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .result-details th, .result-details td { padding: 12px 13px; border-bottom: 1px solid #edf1eb; }
+    .result-details th { background: #f8faf4; color: var(--ink-soft); font-size: 12px; }
+    .result-details tr:last-child td { border-bottom: 0; }
+    .status-correct { color: var(--aqua-deep); font-weight: 900; }
+    .status-wrong { color: var(--coral); font-weight: 900; }
+    .result-actions { display: flex; justify-content: center; gap: 10px; }
+    .result-actions .secondary-button, .result-actions .primary-button { width: auto; min-width: 145px; }
+    .submit-status { min-height: 22px; margin: 18px 0 0; color: var(--aqua-deep); font-size: 13px; font-weight: 700; }
+    .submit-status.pending { color: var(--ink-soft); }
+    .submit-status.error { color: var(--coral); }
+
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+    :focus-visible { outline: 4px solid rgba(243, 117, 98, .44); outline-offset: 3px; }
+
+    @media (max-width: 780px) {
+      .start-grid { grid-template-columns: 1fr; }
+      .hero-card, .login-card { min-height: auto; }
+      .hero-card { min-height: 520px; }
+      .login-card { gap: 26px; }
+      .route-illustration { width: 62%; }
+    }
+
+    @media (max-width: 540px) {
+      .page-shell { width: min(100% - 20px, 1120px); padding-top: 16px; }
+      .site-header { align-items: flex-start; }
+      .teacher-note { display: none; }
+      .hero-card { min-height: 470px; padding: 28px 22px; }
+      .hero-card h1 { font-size: 47px; }
+      .hero-description { font-size: 15px; }
+      .route-illustration { right: -6%; bottom: -2%; width: 82%; }
+      .login-card { padding: 25px 20px; }
+      .quiz-topbar { align-items: flex-start; flex-direction: column; }
+      .choice-grid { grid-template-columns: 1fr; }
+      .answer-option { min-height: 58px; }
+      .feedback { flex-direction: column; }
+      .feedback .next-button { width: 100%; }
+      .score-board { gap: 6px; }
+      .score-cell { padding: 14px 5px; }
+      .score-cell strong { font-size: 26px; }
+      .result-details { overflow-x: auto; }
+      .result-details table { min-width: 510px; }
+      .result-actions { flex-direction: column; }
+      .result-actions .secondary-button, .result-actions .primary-button { width: 100%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="brand" href="#" aria-label="回到水陸小高手首頁">
+        <span class="brand-mark" aria-hidden="true">水</span>
+        <span class="brand-copy"><strong>水陸小高手</strong><span>生字語詞預習站</span></span>
+      </a>
+      <span class="teacher-note">國語課．第一課</span>
+    </header>
+
+    <main>
+      <section id="start-screen" class="screen active" aria-labelledby="start-title">
+        <div class="start-grid">
+          <article class="hero-card">
+            <p class="eyebrow">先玩一遍，再學會</p>
+            <h1 id="start-title">把語詞，<em>玩進</em>腦袋裡。</h1>
+            <p class="hero-description">看圖、找字、過關。用輕鬆的方式預習〈水陸小高手〉，先認識五個會在課文裡出現的語詞。</p>
+            <div class="route-illustration" aria-hidden="true">
+              <svg viewBox="0 0 500 290" role="img">
+                <path d="M20 230 C80 193 112 249 164 213 S255 170 294 207 374 255 475 180" fill="none" stroke="#16a7a0" stroke-width="12" stroke-linecap="round" stroke-dasharray="2 25" />
+                <path d="M24 246 C95 219 121 267 180 235 S265 198 322 233 398 274 478 204" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity=".8" />
+                <path d="M58 222 C78 193 91 178 119 166" fill="none" stroke="#17324d" stroke-width="5" stroke-linecap="round" />
+                <circle cx="51" cy="227" r="22" fill="#f37562" stroke="#17324d" stroke-width="5" />
+                <circle cx="119" cy="164" r="17" fill="#ffc65b" stroke="#17324d" stroke-width="5" />
+                <path d="M177 204 l37 -22 27 16 -37 25z" fill="#b7df9b" stroke="#17324d" stroke-width="5" />
+                <path d="M294 205 c-20 -31 -42 -37 -55 -22 19 2 32 14 42 34" fill="#fff" stroke="#17324d" stroke-width="5" stroke-linejoin="round" />
+                <path d="M391 231 C386 196 404 170 429 150" fill="none" stroke="#17324d" stroke-width="6" stroke-linecap="round" />
+                <path d="M427 150 l-12 20 M428 150 l17 8" fill="none" stroke="#17324d" stroke-width="6" stroke-linecap="round" />
+                <circle cx="474" cy="182" r="15" fill="#ffc65b" stroke="#17324d" stroke-width="5" />
+              </svg>
+            </div>
+          </article>
+
+          <article class="login-card">
+            <div>
+              <p class="eyebrow">學習者登入</p>
+              <h2>準備好出發了嗎？</h2>
+              <p class="lead">請先輸入老師給你的班級座號代碼，成果才會送回老師的紀錄表。</p>
+              <form id="login-form" novalidate>
+                <label class="field-label" for="student-code">班級座號代碼</label>
+                <input id="student-code" class="code-input" name="student-code" inputmode="text" autocomplete="off" maxlength="20" placeholder="例如：401-08" aria-describedby="code-help login-error" />
+                <p id="code-help" class="code-help">只要輸入老師指定的代碼，不用填寫姓名。</p>
+                <p id="login-error" class="login-error" role="alert"></p>
+                <button class="primary-button" type="submit">開始預習</button>
+              </form>
+              <div class="preview-strip" aria-label="本次預習語詞">
+                <span class="preview-word">游泳</span>
+                <span class="preview-word">滑行</span>
+                <span class="preview-word">遨遊</span>
+                <span class="preview-word">陀螺</span>
+                <span class="preview-word">轉身</span>
+              </div>
+            </div>
+            <p class="login-footer">這是一份預習練習，不是考試。每一題答完都會有小提示，慢慢來就好。</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="quiz-screen" class="screen" aria-labelledby="quiz-title">
+        <div class="quiz-topbar">
+          <div>
+            <p class="eyebrow">水陸路線進行中</p>
+            <h2 id="quiz-title" class="quiz-title">找到正確的語詞</h2>
+          </div>
+          <span id="quiz-student-code" class="student-code"></span>
+        </div>
+        <div class="progress-track" aria-label="答題進度"><div id="progress-value" class="progress-value"></div></div>
+
+        <article class="quiz-card" style="margin-top: 24px;">
+          <div class="question-meta">
+            <span id="question-number" class="question-number">第 1 題／共 10 題</span>
+            <span id="question-kind" class="question-kind">看圖選語詞</span>
+          </div>
+          <h3 id="question-title" class="question-title">看看圖片，選出正確的語詞。</h3>
+          <div id="visual-stage" class="visual-stage" aria-label="題目圖片"></div>
+          <div id="choice-grid" class="choice-grid" role="group" aria-label="答案選項"></div>
+          <div id="feedback" class="feedback" aria-live="polite">
+            <div><strong>想一想再點答案</strong><p>不用急，先看清楚圖片或國字。</p></div>
+            <button id="next-button" class="next-button" type="button" hidden>下一題</button>
+          </div>
+        </article>
+      </section>
+
+      <section id="result-screen" class="screen" aria-labelledby="result-title">
+        <article class="result-card">
+          <p class="result-kicker">這次的學習足跡</p>
+          <h2 id="result-title">闖關完成！</h2>
+          <p class="result-copy">你已經把五個語詞和國字看過一遍，這就是很好的開始。</p>
+          <div class="score-board">
+            <div class="score-cell total"><strong id="total-score">0</strong><span>總分／100</span></div>
+            <div class="score-cell"><strong id="correct-count">0</strong><span>答對題數</span></div>
+            <div class="score-cell"><strong id="wrong-count">0</strong><span>再看一次</span></div>
+          </div>
+          <div class="result-details">
+            <table>
+              <thead><tr><th>題次</th><th>練習內容</th><th>你的答案</th><th>結果</th></tr></thead>
+              <tbody id="result-table-body"></tbody>
+            </table>
+          </div>
+          <div class="result-actions">
+            <button id="retry-button" class="primary-button" type="button">再玩一次</button>
+            <button id="home-button" class="secondary-button" type="button">回到首頁</button>
+          </div>
+          <p id="submit-status" class="submit-status pending" aria-live="polite">正在準備學習成果……</p>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // 將 Google Apps Script 部署後的 Web App URL 貼在這裡即可啟用回傳。
+    const APP_SCRIPT_URL = "";
+
+    const vocabulary = [
+      { word: "游泳", kind: "動作", hint: "人在水中靠自己漂浮、划水前進。", art: "swim" },
+      { word: "滑行", kind: "動作", hint: "滑動著向前走或前進。", art: "glide" },
+      { word: "遨遊", kind: "動作", hint: "逍遙自在地到處遊歷、玩賞。", art: "explore" },
+      { word: "陀螺", kind: "物品", hint: "一種可以在地面直立旋轉的玩具。", art: "top" },
+      { word: "轉身", kind: "動作", hint: "把身體回轉過來。", art: "turn" }
+    ];
+
+    const characterPractice = [
+      { character: "泳", answer: "游泳", clue: "和水中運動有關的語詞。" },
+      { character: "滑", answer: "滑行", clue: "和滑動前進有關的語詞。" },
+      { character: "遨", answer: "遨遊", clue: "和自由遊歷有關的語詞。" },
+      { character: "螺", answer: "陀螺", clue: "和旋轉玩具有關的語詞。" },
+      { character: "轉", answer: "轉身", clue: "和回轉身體有關的語詞。" }
+    ];
+
+    const illustrations = {
+      swim: `<svg viewBox="0 0 400 220" role="img" aria-label="小朋友在水中游泳">
+        <path d="M0 157 C42 133 72 181 119 157 S195 131 242 157 320 181 400 145" fill="none" stroke="#16a7a0" stroke-width="16" stroke-linecap="round"/>
+        <path d="M0 182 C45 159 74 206 122 183 S198 159 244 183 321 204 400 171" fill="none" stroke="#087f83" stroke-width="5" stroke-linecap="round" opacity=".55"/>
+        <circle cx="200" cy="65" r="19" fill="#f3ad75" stroke="#17324d" stroke-width="5"/>
+        <path d="M197 85 C173 99 150 104 132 96" fill="none" stroke="#17324d" stroke-width="11" stroke-linecap="round"/>
+        <path d="M173 98 L216 125 M170 100 L145 132" fill="none" stroke="#f37562" stroke-width="12" stroke-linecap="round"/>
+        <path d="M130 96 L102 113 M132 96 L108 87" fill="none" stroke="#17324d" stroke-width="8" stroke-linecap="round"/>
+        <path d="M218 124 L246 111 M218 124 L241 137" fill="none" stroke="#17324d" stroke-width="8" stroke-linecap="round"/>
+        <path d="M104 61 C123 50 140 51 155 62" fill="none" stroke="#ffc65b" stroke-width="7" stroke-linecap="round"/>
+      </svg>`,
+      glide: `<svg viewBox="0 0 400 220" role="img" aria-label="小朋友穿著直排輪滑行">
+        <path d="M44 183 Q160 155 326 179" fill="none" stroke="#b7df9b" stroke-width="24" stroke-linecap="round"/>
+        <path d="M47 199 Q161 171 326 195" fill="none" stroke="#17324d" stroke-width="4" stroke-linecap="round" opacity=".3"/>
+        <circle cx="183" cy="47" r="18" fill="#f3ad75" stroke="#17324d" stroke-width="5"/>
+        <path d="M182 67 L166 112 L210 139" fill="none" stroke="#17324d" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M167 84 L135 108 M167 84 L200 93" fill="none" stroke="#f37562" stroke-width="12" stroke-linecap="round"/>
+        <path d="M210 139 L164 156 M210 139 L254 150" fill="none" stroke="#17324d" stroke-width="9" stroke-linecap="round"/>
+        <path d="M151 157 L180 157 M239 151 L267 151" fill="none" stroke="#16a7a0" stroke-width="9" stroke-linecap="round"/>
+        <circle cx="157" cy="168" r="7" fill="#17324d"/><circle cx="177" cy="165" r="7" fill="#17324d"/><circle cx="245" cy="159" r="7" fill="#17324d"/><circle cx="264" cy="157" r="7" fill="#17324d"/>
+        <path d="M87 72 H130 M68 96 H105" stroke="#16a7a0" stroke-width="6" stroke-linecap="round"/>
+      </svg>`,
+      explore: `<svg viewBox="0 0 400 220" role="img" aria-label="小鳥在天空中遨遊">
+        <circle cx="80" cy="66" r="26" fill="#ffc65b" opacity=".9"/>
+        <path d="M0 176 C91 155 146 194 228 169 S325 147 400 169" fill="none" stroke="#b7df9b" stroke-width="18" stroke-linecap="round"/>
+        <path d="M132 101 C155 71 183 73 205 95 C230 68 258 72 280 103 C247 97 222 108 207 130 C187 108 161 99 132 101Z" fill="#f37562" stroke="#17324d" stroke-width="5" stroke-linejoin="round"/>
+        <circle cx="210" cy="97" r="4" fill="#17324d"/>
+        <path d="M102 129 C133 114 157 115 179 129 M271 126 C303 111 327 113 351 127" fill="none" stroke="#16a7a0" stroke-width="6" stroke-linecap="round"/>
+        <path d="M202 142 C209 151 216 151 223 142" fill="none" stroke="#17324d" stroke-width="5" stroke-linecap="round"/>
+      </svg>`,
+      top: `<svg viewBox="0 0 400 220" role="img" aria-label="陀螺在地面旋轉">
+        <path d="M35 188 Q200 160 367 188" fill="none" stroke="#b7df9b" stroke-width="26" stroke-linecap="round"/>
+        <path d="M108 70 C145 52 201 54 229 79 C248 95 242 127 218 143 L190 185 L162 143 C126 129 109 104 108 70Z" fill="#f37562" stroke="#17324d" stroke-width="6" stroke-linejoin="round"/>
+        <path d="M109 73 C147 91 195 93 232 78" fill="none" stroke="#ffc65b" stroke-width="12"/>
+        <path d="M173 60 L173 35" stroke="#17324d" stroke-width="6" stroke-linecap="round"/>
+        <path d="M263 88 C294 78 320 90 337 112 M276 65 C310 58 340 69 355 89" fill="none" stroke="#16a7a0" stroke-width="6" stroke-linecap="round"/>
+        <path d="M137 150 L112 170 M225 150 L249 170" stroke="#17324d" stroke-width="5" stroke-linecap="round"/>
+      </svg>`,
+      turn: `<svg viewBox="0 0 400 220" role="img" aria-label="小朋友轉身">
+        <path d="M68 174 C98 93 169 71 227 112 C260 135 297 130 327 98" fill="none" stroke="#16a7a0" stroke-width="9" stroke-linecap="round" stroke-dasharray="2 20"/>
+        <path d="M310 77 L333 96 L311 113" fill="none" stroke="#f37562" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="180" cy="58" r="19" fill="#f3ad75" stroke="#17324d" stroke-width="5"/>
+        <path d="M179 78 L179 128 M179 93 L148 112 M179 93 L209 107 M179 128 L150 161 M179 128 L211 160" fill="none" stroke="#17324d" stroke-width="11" stroke-linecap="round"/>
+        <path d="M159 80 Q180 92 200 80" fill="none" stroke="#f37562" stroke-width="13" stroke-linecap="round"/>
+        <path d="M100 69 C113 57 128 53 142 58" fill="none" stroke="#ffc65b" stroke-width="7" stroke-linecap="round"/>
+      </svg>`
+    };
+
+    const $ = (selector) => document.querySelector(selector);
+    const screens = { start: $("#start-screen"), quiz: $("#quiz-screen"), result: $("#result-screen") };
+    const state = { code: "", items: [], index: 0, records: [], startedAt: "" };
+
+    function shuffle(items) {
+      return [...items].sort(() => Math.random() - .5);
+    }
+
+    function showScreen(name) {
+      Object.values(screens).forEach((screen) => screen.classList.remove("active"));
+      screens[name].classList.add("active");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function makeQuizItems() {
+      const imageItems = vocabulary.map((entry) => ({
+        type: "picture",
+        answer: entry.word,
+        prompt: "看看圖片，選出正確的語詞。",
+        kind: "看圖選語詞",
+        hint: entry.hint,
+        art: entry.art,
+        choices: shuffle([entry.word, ...shuffle(vocabulary.filter((item) => item.word !== entry.word)).slice(0, 2).map((item) => item.word)])
+      }));
+      const characterItems = characterPractice.map((entry) => ({
+        type: "character",
+        answer: entry.answer,
+        character: entry.character,
+        prompt: "找出含有這個國字的語詞。",
+        kind: "認字找語詞",
+        hint: entry.clue,
+        choices: shuffle([entry.answer, ...shuffle(vocabulary.filter((item) => item.word !== entry.answer)).slice(0, 2).map((item) => item.word)])
+      }));
+      return [...imageItems, ...characterItems];
+    }
+
+    function renderQuestion() {
+      const item = state.items[state.index];
+      const total = state.items.length;
+      $("#question-number").textContent = `第 ${state.index + 1} 題／共 ${total} 題`;
+      $("#question-kind").textContent = item.kind;
+      $("#question-title").textContent = item.prompt;
+      $("#progress-value").style.width = `${(state.index / total) * 100}%`;
+      $("#visual-stage").innerHTML = item.type === "picture"
+        ? illustrations[item.art]
+        : `<div class="character-visual" aria-label="國字${item.character}">${item.character}</div>`;
+      $("#choice-grid").innerHTML = item.choices.map((choice) => `<button class="answer-option" type="button" data-answer="${choice}">${choice}</button>`).join("");
+      $("#feedback").className = "feedback";
+      $("#feedback").innerHTML = `<div><strong>想一想再點答案</strong><p>不用急，先看清楚圖片或國字。</p></div><button id="next-button" class="next-button" type="button" hidden>下一題</button>`;
+      $("#choice-grid").querySelectorAll(".answer-option").forEach((button) => button.addEventListener("click", () => selectAnswer(button, item)));
+    }
+
+    function selectAnswer(button, item) {
+      const choice = button.dataset.answer;
+      const correct = choice === item.answer;
+      $("#choice-grid").querySelectorAll(".answer-option").forEach((option) => {
+        option.disabled = true;
+        if (option.dataset.answer === item.answer) option.classList.add("is-correct");
+      });
+      if (!correct) button.classList.add("is-wrong");
+      state.records.push({
+        number: state.index + 1,
+        type: item.type,
+        prompt: item.type === "picture" ? item.answer : `國字「${item.character}」`,
+        answer: item.answer,
+        choice,
+        correct,
+        hint: item.hint
+      });
+      const feedback = $("#feedback");
+      feedback.className = `feedback ${correct ? "good" : "needs"}`;
+      feedback.innerHTML = `<div><strong>${correct ? "答對了！" : `先記起來：答案是「${item.answer}」`}</strong><p>${item.hint}</p></div><button id="next-button" class="next-button" type="button">${state.index === state.items.length - 1 ? "看我的學習成果" : "下一題"}</button>`;
+      $("#next-button").addEventListener("click", moveNext);
+      $("#next-button").focus();
+    }
+
+    function moveNext() {
+      if (state.index < state.items.length - 1) {
+        state.index += 1;
+        renderQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function startQuiz(event) {
+      event.preventDefault();
+      const input = $("#student-code");
+      const code = input.value.trim();
+      if (!code) {
+        $("#login-error").textContent = "請先輸入班級座號代碼。";
+        input.focus();
+        return;
+      }
+      state.code = code;
+      state.items = makeQuizItems();
+      state.index = 0;
+      state.records = [];
+      state.startedAt = new Date().toISOString();
+      $("#quiz-student-code").textContent = `代碼：${code}`;
+      showScreen("quiz");
+      renderQuestion();
+    }
+
+    async function submitResult(payload) {
+      localStorage.setItem("water-land-last-result", JSON.stringify(payload));
+      const status = $("#submit-status");
+      if (!APP_SCRIPT_URL) {
+        status.className = "submit-status pending";
+        status.textContent = "目前尚未連接老師的紀錄表；本次成果已保存在這台裝置。";
+        return;
+      }
+      status.className = "submit-status pending";
+      status.textContent = "正在把成果送回老師的紀錄表……";
+      try {
+        await fetch(APP_SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+        status.className = "submit-status";
+        status.textContent = "成果已送回老師的紀錄表。";
+      } catch (error) {
+        status.className = "submit-status error";
+        status.textContent = "目前無法連線；成果仍保存在這台裝置，請告訴老師。";
+      }
+    }
+
+    function showResults() {
+      const correct = state.records.filter((record) => record.correct).length;
+      const wrong = state.records.length - correct;
+      const score = correct * 10;
+      $("#progress-value").style.width = "100%";
+      $("#total-score").textContent = score;
+      $("#correct-count").textContent = correct;
+      $("#wrong-count").textContent = wrong;
+      $("#result-table-body").innerHTML = state.records.map((record) => `<tr><td>${record.number}</td><td>${record.prompt}</td><td>${record.choice}</td><td class="${record.correct ? "status-correct" : "status-wrong"}">${record.correct ? "答對" : "再看一次"}</td></tr>`).join("");
+      showScreen("result");
+      submitResult({
+        code: state.code,
+        score,
+        correct,
+        wrong,
+        total: state.records.length,
+        startedAt: state.startedAt,
+        completedAt: new Date().toISOString(),
+        records: state.records
+      });
+    }
+
+    function resetToHome() {
+      $("#login-error").textContent = "";
+      $("#student-code").value = state.code;
+      showScreen("start");
+      $("#student-code").focus();
+    }
+
+    $("#login-form").addEventListener("submit", startQuiz);
+    $("#retry-button").addEventListener("click", () => {
+      state.items = makeQuizItems();
+      state.index = 0;
+      state.records = [];
+      state.startedAt = new Date().toISOString();
+      showScreen("quiz");
+      renderQuestion();
+    });
+    $("#home-button").addEventListener("click", resetToHome);
+    $(".brand").addEventListener("click", (event) => { event.preventDefault(); resetToHome(); });
+  </script>
+</body>
+</html>
