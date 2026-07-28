@@ -17,15 +17,15 @@
 
 ## 連接 Google Apps Script
 
-1. 建立一份 Google 試算表，選擇「擴充功能 → Apps Script」。
-2. 將 `apps-script/Code.gs` 的內容貼入 Apps Script 編輯器並儲存。
+1. 開啟 Google Apps Script，建立「新專案」。
+2. 將 `apps-script/Code.gs` 的內容完整貼入編輯器並儲存。
 3. 選擇「部署 → 新增部署」，類型選「網頁應用程式」。
 4. 「執行身分」選自己；「誰可以存取」選「任何人」。
 5. 複製部署完成後的 Web App URL。
-6. 打開 `app-config.js`，把 `window.APP_SCRIPT_URL = "";` 的 URL 貼在雙引號中。
-7. 將 `index.html`、`app-config.js`、`assets/` 一起部署到前端網址。
+6. 第一次用瀏覽器開啟 Web App URL，完成 Google 授權；程式會自動建立「水陸小高手｜學生評量紀錄」試算表。
+7. 將 Web App URL 貼到 `app-config.js` 的 `window.APP_SCRIPT_URL` 雙引號中，再部署 `index.html`、`app-config.js`、`assets/`。
 
-Apps Script 會在試算表建立「評量紀錄」工作表，欄位包含班級座號代碼、總分、答對／答錯題數、時間與每題明細。
+Apps Script 會自動建立試算表與「評量紀錄」工作表，欄位包含班級座號代碼、總分、答對／答錯題數、時間與每題明細。直接開啟 Web App URL 會回傳試算表網址。
 
 ## 注意
 
