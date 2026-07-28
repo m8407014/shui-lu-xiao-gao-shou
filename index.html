@@ -357,9 +357,10 @@
 
   <div id="encouragement" class="encouragement" aria-live="polite"></div>
 
+  <script src="app-config.js"></script>
   <script>
-    // 將 Google Apps Script 部署後的 Web App URL 貼在這裡即可啟用回傳。
-    const APP_SCRIPT_URL = "";
+    // URL 統一放在 app-config.js，避免修改題目程式。
+    const APP_SCRIPT_URL = window.APP_SCRIPT_URL || "";
 
     const vocabulary = [
       { word: "游泳", hint: "在水中用手腳划水前進。", image: "assets/vocab-swim.png", alt: "小朋友在游泳池游泳" },

@@ -22,7 +22,8 @@
 3. 選擇「部署 → 新增部署」，類型選「網頁應用程式」。
 4. 「執行身分」選自己；「誰可以存取」選「任何人」。
 5. 複製部署完成後的 Web App URL。
-6. 打開 `index.html`，找到 `const APP_SCRIPT_URL = "";`，把 URL 貼在雙引號中。
+6. 打開 `app-config.js`，把 `window.APP_SCRIPT_URL = "";` 的 URL 貼在雙引號中。
+7. 將 `index.html`、`app-config.js`、`assets/` 一起部署到前端網址。
 
 Apps Script 會在試算表建立「評量紀錄」工作表，欄位包含班級座號代碼、總分、答對／答錯題數、時間與每題明細。
 
