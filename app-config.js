@@ -1,2 +1,2 @@
-// 部署 Google Apps Script 後，把 Web App URL 貼在雙引號中。
-window.APP_SCRIPT_URL = "";
+// Google Apps Script Web App deployment URL.
+window.APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyssvrGDp4rtXpHTHRONOcZsc7JA4T3hytnat6JsjmgImQI4Jiql0CFZkEGGinQv5kRpw/exec";
