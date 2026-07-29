@@ -129,6 +129,8 @@
     .ai-pet-intro .ai-pet { flex: 0 0 auto; }
     .ai-pet-intro strong { display: block; margin-bottom: 3px; color: var(--aqua-dark); font-size: 14px; }
     .ai-pet-intro p { margin: 0; color: var(--ink-soft); font-size: 12px; line-height: 1.55; }
+    .pet-call-button { flex: 0 0 auto; min-height: 38px; padding: 7px 11px; border: 2px solid var(--aqua-dark); border-radius: 11px; background: #fff; color: var(--aqua-dark); font-size: 12px; font-weight: 900; }
+    .pet-call-button:hover, .pet-call-button:focus-visible { background: #ddf6ed; transform: translateY(-2px); }
     .field-label { display: block; margin-bottom: 9px; font-size: 14px; font-weight: 900; }
     .code-input { width: 100%; padding: 15px 16px; border: 2px solid var(--line); border-radius: 14px; outline: 0; background: #fff; color: var(--ink); font-size: 20px; font-weight: 900; letter-spacing: .06em; transition: border-color .2s, box-shadow .2s; }
     .code-input:focus { border-color: var(--aqua); box-shadow: 0 0 0 4px rgba(20, 158, 154, .15); }
@@ -241,9 +243,16 @@
     .passage-blank { display: inline-block; min-width: 78px; margin: 0 3px; padding: 0 7px; border-bottom: 3px solid var(--aqua); color: var(--aqua-dark); font-weight: 900; text-align: center; }
     .passage-blank.current { background: #fff; border-radius: 8px 8px 0 0; box-shadow: 0 3px 0 var(--gold); }
     .passage-blank.filled { border-bottom-color: var(--ink); color: var(--ink); }
+    .passage-blank.drop-target { cursor: copy; animation: drop-pulse 1.2s ease-in-out infinite; }
+    .passage-blank.drop-target.over, .passage-blank.drop-target:focus-visible { background: #fff4c9; transform: scale(1.06); }
+    @keyframes drop-pulse { 50% { box-shadow: 0 4px 0 var(--gold), 0 0 0 5px rgba(248, 197, 95, .22); } }
     .advanced-question { margin: 0 0 14px; color: var(--ink); font-size: 17px; font-weight: 900; }
     .advanced-choice-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
     .advanced-choice { min-height: 64px; padding: 10px 14px; border: 2px solid var(--line); border-radius: 16px; background: #fff; color: var(--ink); font-size: 21px; font-weight: 900; transition: transform .16s, border-color .16s, background .16s; }
+    .advanced-choice.knowledge-choice { min-height: 72px; font-size: 17px; line-height: 1.45; }
+    .advanced-choice.drag-card { cursor: grab; }
+    .advanced-choice.drag-card:active { cursor: grabbing; }
+    .advanced-choice.selected { border-color: var(--gold); background: #fff4c9; box-shadow: 0 4px 0 var(--gold); }
     .advanced-choice:hover:not(:disabled), .advanced-choice:focus-visible:not(:disabled) { transform: translateY(-3px); border-color: var(--aqua); background: #edfbf7; }
     .advanced-choice:disabled { cursor: default; opacity: .72; }
     .advanced-choice.is-correct { border-color: var(--aqua); background: #ddf6ed; color: var(--aqua-dark); opacity: 1; }
@@ -328,7 +337,8 @@
               <p class="lead">請輸入老師給你的班級座號代碼。這份練習會記錄作答結果，但不用填寫姓名。</p>
               <div class="ai-pet-intro">
                 <span class="ai-pet" data-pose="cheer" role="img" aria-label="AI 小海獺小老師正在加油"></span>
-                <div><strong>AI 小海獺小老師陪你學</strong><p>答錯也沒關係，牠會用生活畫面給你小提示。</p></div>
+                <div><strong>AI 小海獺小老師陪你學</strong><p>答錯也沒關係，牠會用生活畫面給你小提示；按下呼叫按鈕，說「小海獺，請幫我」。</p></div>
+                <button class="pet-call-button" type="button">呼叫小海獺</button>
               </div>
               <form id="login-form" novalidate>
                 <p id="code-help" class="code-help"><strong>登入格式：5 碼數字</strong>前三碼是班級，後兩碼是代號，例如：40402。</p>
@@ -341,7 +351,7 @@
                 <div class="map-cell"><strong>15</strong><span>本課生字</span></div>
                 <div class="map-cell words"><strong>5</strong><span>動詞語詞看圖</span></div>
               </div>
-              <p class="challenge-note">20 題全部答對，就會解鎖最後的「短文語詞配合題」。</p>
+              <p class="challenge-note">20 題全部答對，就會解鎖最後的「拖拉語詞＋進階知識題」。</p>
             </div>
             <p class="login-footer">這是一份預習練習，不是考試。答錯時會顯示正確答案和小提示，先看懂再往下走。</p>
           </article>
@@ -356,6 +366,7 @@
           </div>
           <div class="quiz-tools">
             <span id="quiz-student-code" class="student-code"></span>
+            <button class="pet-call-button" type="button">呼叫小海獺</button>
             <button id="sound-toggle" class="sound-toggle" type="button" aria-pressed="true">音效開</button>
             <div id="timer-box" class="timer-box" aria-live="polite"><span>剩餘時間</span><strong id="timer-value">05:00</strong></div>
           </div>
@@ -385,17 +396,18 @@
         <div class="quiz-header">
           <div>
             <p class="eyebrow">最後挑戰・語詞應用</p>
-            <h2 id="advanced-title">讀文章找出適當語詞</h2>
+            <h2 id="advanced-title">進階任務：語詞與閱讀</h2>
           </div>
           <div class="quiz-tools">
             <span id="advanced-student-code" class="student-code"></span>
+            <button class="pet-call-button" type="button">呼叫小海獺</button>
             <span class="challenge-badge">基礎 100 分解鎖</span>
           </div>
         </div>
 
         <article class="advanced-card">
-          <p class="advanced-intro">太棒了！你已經完成基礎複習。讀一讀短文，從語詞寶箱選出最適合的詞語，完成最後挑戰。</p>
-          <div class="passage-panel">
+          <p class="advanced-intro">太棒了！你已經完成基礎複習。先把語詞卡拖進短文空格，再分區挑戰同音異字、同字異義、相近字、相異詞，最後檢查文體和主旨。</p>
+          <div id="advanced-passage-panel" class="passage-panel">
             <p id="advanced-passage-title" class="passage-title"></p>
             <p id="advanced-passage-text" class="passage-text"></p>
           </div>
@@ -453,6 +465,7 @@
     ];
 
     const characters = [
+      { character: "陸", bopomofo: "ㄌㄨˋ", meaning: "高出水面的平地" },
       { character: "泳", bopomofo: "ㄩㄥˇ", meaning: "在水中游動" },
       { character: "串", bopomofo: "ㄔㄨㄢˋ", meaning: "把東西連貫在一起" },
       { character: "般", bopomofo: "ㄅㄢ", meaning: "種類" },
@@ -461,26 +474,83 @@
       { character: "耳", bopomofo: "ㄦˇ", meaning: "聽覺器官" },
       { character: "鷹", bopomofo: "ㄧㄥ", meaning: "一種眼尖、會捕食的猛禽" },
       { character: "滑", bopomofo: "ㄏㄨㄚˊ", meaning: "平順、無阻礙" },
-      { character: "遨", bopomofo: "ㄠˊ", meaning: "遊玩" },
+      { character: "遨", bopomofo: "ㄠˊ", meaning: "逍遙自在地到處遊歷" },
       { character: "緩", bopomofo: "ㄏㄨㄢˇ", meaning: "慢而不急" },
       { character: "陀", bopomofo: "ㄊㄨㄛˊ", meaning: "佛教用語" },
       { character: "螺", bopomofo: "ㄌㄨㄛˊ", meaning: "帶有旋紋硬殼的軟體動物" },
       { character: "轉", bopomofo: "ㄓㄨㄢˇ", meaning: "變換或迴旋" },
-      { character: "躍", bopomofo: "ㄩㄝˋ", meaning: "跳" },
       { character: "煩", bopomofo: "ㄈㄢˊ", meaning: "心裡著急不安" }
     ];
 
     const advancedChallenges = [
       {
-        id: "word-journey",
+        id: "word-journey-and-reading",
         title: "海邊的語詞旅行",
-        text: "放假時，我們到海邊。弟弟先下水{{1}}，我踩著直排輪在木板道上{{2}}。抬頭看見海鷗在藍天白雲間{{3}}，那不是只在一個地方遊玩，而是自由地在天地之間飛翔。回家時，我{{4}}向爸爸揮手，心裡的{{5}}也消失了。",
+        text: "放學後，我們到水邊活動。弟弟先下水{{1}}，我踩著直排輪在木板道上{{2}}。抬頭看見海鷗在藍天白雲間{{3}}，自由地在天地之間飛翔。回家時，小船{{4}}靠岸，我心裡的{{5}}也消失了。",
         blanks: [
           { answer: "游泳", choices: ["游泳", "遊玩", "滑行"], hint: "想想身體在水裡用手腳划動前進。" },
           { answer: "滑行", choices: ["滑行", "遨遊", "緩緩"], hint: "想想直排輪在地面上滑動前進，不是用走的。" },
-          { answer: "遨遊", choices: ["遨遊", "遊玩", "游泳"], hint: "這裡不是在固定地方玩，而是在寬廣的天地之間自由飛翔。" },
-          { answer: "轉身", choices: ["轉身", "滑行", "遨遊"], hint: "想想身體回轉到另一個方向，再向爸爸揮手。" },
-          { answer: "煩惱", choices: ["煩惱", "遊玩", "緩緩"], hint: "想想原本擔心、不開心的心情，後來被快樂的回憶帶走了。" }
+          { answer: "遨遊", choices: ["遨遊", "遊玩", "游泳"], hint: "遨遊不只是遊玩，而是自由自在地在寬廣天地間遊歷。" },
+          { answer: "緩緩", choices: ["緩緩", "轉身", "遨遊"], hint: "想想小船速度不快，一點一點地靠近岸邊。" },
+          { answer: "煩惱", choices: ["煩惱", "遊玩", "滑行"], hint: "想想原本擔心、不開心的心情，後來被快樂的活動帶走了。" }
+        ],
+        knowledge: [
+          {
+            section: "同音異字",
+            mode: "同音異字",
+            prompt: "「ㄩㄥˇ」有好幾個字。哪一個是本課「在水中游動」的生字？",
+            choices: ["泳", "勇", "永"],
+            answer: "泳",
+            hint: "和水中活動有關，要找「游泳」的泳。"
+          },
+          {
+            section: "同字異義",
+            mode: "同字異義",
+            prompt: "「滑行」和「光滑」都有「滑」，但意思不同。「滑行」的滑是什麼意思？",
+            choices: ["滑動前進", "表面平順", "不老實、狡猾"],
+            answer: "滑動前進",
+            hint: "放回語詞裡想：直排輪是滑動著向前，不是在說表面摸起來平不平。"
+          },
+          {
+            section: "相近字辨認",
+            mode: "相近字",
+            prompt: "想寫「在天地間自由自在地遊歷」的語詞，哪一個字形和字義都正確？",
+            choices: ["遨遊", "傲遊", "熬遊"],
+            answer: "遨遊",
+            hint: "「遨」是遨遊的遨，和自由到處遊歷的意思有關。"
+          },
+          {
+            section: "相近詞辨析",
+            mode: "相近詞",
+            prompt: "只能在一個地方走動，算不算「遨遊」？",
+            choices: ["算，遨遊和遊玩完全一樣", "不算，遨遊強調自由、到處遊歷", "算，只要玩得開心就可以"],
+            answer: "不算，遨遊強調自由、到處遊歷",
+            hint: "遨遊可以想成在天地之間自由來去，不只是待在一個地方玩。"
+          },
+          {
+            section: "相異詞辨析",
+            mode: "相異詞",
+            prompt: "清晨，小船速度不快，一點一點地向岸邊前進。哪個語詞最適合？",
+            choices: ["緩緩", "遨遊", "轉身"],
+            answer: "緩緩",
+            hint: "緩緩是慢慢、不急；遨遊是自由到處遊歷，轉身是回轉身體。"
+          },
+          {
+            section: "課文文體",
+            mode: "文體",
+            prompt: "本課用活潑的畫面描寫活動和想像，主要是什麼文體？",
+            choices: ["詩歌", "說明文", "應用文"],
+            answer: "詩歌",
+            hint: "本課以兩首詩寫出活動中的感受和想像。"
+          },
+          {
+            section: "課文主旨",
+            mode: "主旨",
+            prompt: "哪一句最能說明本課的主旨？",
+            choices: ["運動能帶來快樂與想像力", "活動一定要準備很多工具", "只有比賽第一名才是高手"],
+            answer: "運動能帶來快樂與想像力",
+            hint: "課文把活動寫得像變成魚、飛鷹，表現運動帶來的快樂和想像。"
+          }
         ]
       }
     ];
@@ -498,7 +568,9 @@
       soundOn: true,
       audioContext: null,
       advancedChallenge: null,
+      advancedStage: "cloze",
       advancedIndex: 0,
+      selectedAdvancedChoice: "",
       advancedRecords: [],
       advancedStarted: false,
       baseScore: 0
@@ -580,9 +652,9 @@
       });
     }
 
-    function speakFeedback(correct) {
-      if (!state.soundOn || !("speechSynthesis" in window)) return;
-      const utterance = new SpeechSynthesisUtterance(correct ? "正確！很棒！" : "錯誤！加油！");
+    function speakText(text) {
+      if (!state.soundOn || !("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) return;
+      const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = "zh-TW";
       utterance.rate = .9;
       utterance.pitch = 1.25;
@@ -592,6 +664,44 @@
       if (chineseVoice) utterance.voice = chineseVoice;
       window.speechSynthesis.cancel();
       window.speechSynthesis.speak(utterance);
+    }
+
+    function speakFeedback(correct) {
+      speakText(correct ? "正確！很棒！" : "錯誤！加油！");
+    }
+
+    function callPet(button) {
+      const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!Recognition) {
+        speakText("我在這裡！請按題目下方的提示，我會陪你找線索。");
+        showEncouragement("目前裝置不支援語音聆聽，仍可使用語音播放");
+        return;
+      }
+      const recognition = new Recognition();
+      recognition.lang = "zh-TW";
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+      button.disabled = true;
+      button.textContent = "正在聽…";
+      recognition.onresult = (event) => {
+        const heard = event.results[0][0].transcript.trim();
+        if (/小海獺|海獺|提示/.test(heard)) {
+          speakText("我在這裡！先找題目裡的線索，再試一次，你可以的！");
+          showEncouragement("小海獺聽見你了！");
+        } else {
+          speakText(`我聽到「${heard}」。請說小海獺，或先看看題目提示。`);
+          showEncouragement("再叫我一次");
+        }
+      };
+      recognition.onerror = () => {
+        speakText("我沒有聽清楚，請再按一次呼叫小海獺。");
+        showEncouragement("再試一次");
+      };
+      recognition.onend = () => {
+        button.disabled = false;
+        button.textContent = "呼叫小海獺";
+      };
+      recognition.start();
     }
 
     function showEncouragement(message) {
@@ -710,30 +820,95 @@
       const challenge = state.advancedChallenge;
       $("#advanced-passage-text").innerHTML = challenge.text.replace(/\{\{(\d+)\}\}/g, (_, marker) => {
         const blankIndex = Number(marker) - 1;
-        const record = state.advancedRecords[blankIndex];
+        const record = state.advancedRecords.find((item) => item.type === "advanced-cloze" && item.number === blankIndex + 1);
         const isCurrent = blankIndex === state.advancedIndex;
         const value = record ? record.choice : (isCurrent ? "？" : "＿＿");
-        const classes = ["passage-blank", record ? "filled" : "", isCurrent ? "current" : ""].filter(Boolean).join(" ");
-        return `<span class="${classes}">${value}</span>`;
+        const classes = ["passage-blank", record ? "filled" : "", isCurrent ? "current drop-target" : ""].filter(Boolean).join(" ");
+        const dropAttributes = isCurrent && !record ? ` data-drop-index="${blankIndex}" tabindex="0" role="button" aria-label="將語詞拖到這個空格"` : "";
+        return `<span class="${classes}"${dropAttributes}>${value}</span>`;
+      });
+    }
+
+    function getAdvancedTasks() {
+      return state.advancedStage === "cloze" ? state.advancedChallenge.blanks : state.advancedChallenge.knowledge;
+    }
+
+    function isAdvancedLastTask() {
+      const tasks = getAdvancedTasks();
+      return state.advancedStage === "knowledge" && state.advancedIndex === tasks.length - 1;
+    }
+
+    function bindAdvancedDragAndDrop(task) {
+      const dropZone = $("#advanced-passage-text [data-drop-index]");
+      if (!dropZone) return;
+      const choices = $("#advanced-choice-grid").querySelectorAll(".drag-card");
+      choices.forEach((choice) => {
+        choice.addEventListener("dragstart", (event) => {
+          event.dataTransfer.setData("text/plain", choice.dataset.answer);
+          choice.classList.add("selected");
+        });
+        choice.addEventListener("dragend", () => choice.classList.remove("selected"));
+        choice.addEventListener("click", () => {
+          state.selectedAdvancedChoice = choice.dataset.answer;
+          choices.forEach((item) => item.classList.toggle("selected", item === choice));
+          $("#advanced-feedback p").textContent = `已選「${choice.dataset.answer}」，請拖到短文的「？」空格；也可以再點一下空格。`;
+        });
+      });
+      dropZone.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        dropZone.classList.add("over");
+      });
+      dropZone.addEventListener("dragleave", () => dropZone.classList.remove("over"));
+      dropZone.addEventListener("drop", (event) => {
+        event.preventDefault();
+        dropZone.classList.remove("over");
+        const choice = event.dataTransfer.getData("text/plain") || state.selectedAdvancedChoice;
+        if (choice) selectAdvancedAnswer(choice, task);
+      });
+      dropZone.addEventListener("click", () => {
+        if (state.selectedAdvancedChoice) selectAdvancedAnswer(state.selectedAdvancedChoice, task);
+      });
+      dropZone.addEventListener("keydown", (event) => {
+        if ((event.key === "Enter" || event.key === " ") && state.selectedAdvancedChoice) {
+          event.preventDefault();
+          selectAdvancedAnswer(state.selectedAdvancedChoice, task);
+        }
       });
     }
 
     function renderAdvancedQuestion() {
       const challenge = state.advancedChallenge;
-      const blank = challenge.blanks[state.advancedIndex];
+      const isCloze = state.advancedStage === "cloze";
+      const tasks = getAdvancedTasks();
+      const task = tasks[state.advancedIndex];
+      state.selectedAdvancedChoice = "";
+      $("#advanced-passage-panel").hidden = !isCloze;
       $("#advanced-passage-title").textContent = challenge.title;
-      $("#advanced-question").textContent = `第 ${state.advancedIndex + 1} 格／共 ${challenge.blanks.length} 格：選出最適合的語詞。`;
-      $("#advanced-choice-grid").innerHTML = shuffle(blank.choices).map((choice) => `<button class="advanced-choice" type="button" data-answer="${choice}">${choice}</button>`).join("");
+      $("#advanced-question").textContent = isCloze
+        ? `語詞拖拉 ${state.advancedIndex + 1}／${challenge.blanks.length}：把最適合的語詞卡拖到短文空格。`
+        : `知識點 ${state.advancedIndex + 1}／${challenge.knowledge.length}【${task.section}】${task.prompt}`;
+      const choiceClass = isCloze ? "advanced-choice drag-card" : "advanced-choice knowledge-choice";
+      const draggable = isCloze ? " draggable=\"true\"" : "";
+      $("#advanced-choice-grid").innerHTML = shuffle(task.choices).map((choice) => `<button class="${choiceClass}" type="button" data-answer="${choice}"${draggable}>${choice}</button>`).join("");
       $("#advanced-feedback").className = "advanced-feedback";
-      $("#advanced-feedback").innerHTML = `<div><strong>讀讀前後文再作答</strong><p>想想哪個語詞最符合句子的意思。</p></div><span class="ai-pet" data-pose="think" role="img" aria-label="AI 小海獺正在思考"></span><button id="advanced-next-button" class="advanced-next" type="button" hidden>下一格</button>`;
-      $("#advanced-choice-grid").querySelectorAll(".advanced-choice").forEach((button) => button.addEventListener("click", () => selectAdvancedAnswer(button, blank)));
-      renderAdvancedPassage();
+      $("#advanced-feedback").innerHTML = isCloze
+        ? `<div><strong>把語詞卡拖進空格</strong><p>先讀前後文，再拖曳最適合的語詞；手機也可以先點語詞卡，再點「？」。</p></div><span class="ai-pet" data-pose="think" role="img" aria-label="AI 小海獺正在思考"></span><button id="advanced-next-button" class="advanced-next" type="button" hidden>下一格</button>`
+        : `<div><strong>分區想一想再作答</strong><p>這一題只考「${task.section}」，不要和其他辨析方式混在一起。</p></div><span class="ai-pet" data-pose="think" role="img" aria-label="AI 小海獺正在思考"></span><button id="advanced-next-button" class="advanced-next" type="button" hidden>下一題</button>`;
+      if (isCloze) {
+        $("#advanced-choice-grid").querySelectorAll(".drag-card").forEach((button) => button.setAttribute("aria-label", `語詞卡：${button.dataset.answer}，拖曳到短文空格`));
+        renderAdvancedPassage();
+        bindAdvancedDragAndDrop(task);
+      } else {
+        $("#advanced-choice-grid").querySelectorAll(".advanced-choice").forEach((button) => button.addEventListener("click", () => selectAdvancedAnswer(button.dataset.answer, task)));
+      }
     }
 
     function startAdvancedChallenge() {
       stopTimer();
       state.advancedChallenge = advancedChallenges[Math.floor(Math.random() * advancedChallenges.length)];
+      state.advancedStage = "cloze";
       state.advancedIndex = 0;
+      state.selectedAdvancedChoice = "";
       state.advancedRecords = [];
       state.advancedStarted = true;
       $("#advanced-student-code").textContent = `代碼：${state.code}`;
@@ -744,42 +919,49 @@
       renderAdvancedQuestion();
     }
 
-    function selectAdvancedAnswer(button, blank) {
-      const choice = button.dataset.answer;
-      const correct = choice === blank.answer;
+    function selectAdvancedAnswer(choice, task) {
+      const correct = choice === task.answer;
+      const isCloze = state.advancedStage === "cloze";
       $("#advanced-choice-grid").querySelectorAll(".advanced-choice").forEach((option) => {
         option.disabled = true;
-        if (option.dataset.answer === blank.answer) option.classList.add("is-correct");
+        if (option.dataset.answer === task.answer) option.classList.add("is-correct");
       });
-      if (!correct) button.classList.add("is-wrong");
+      if (!correct) $("#advanced-choice-grid").querySelector(`[data-answer="${choice}"]`).classList.add("is-wrong");
       state.advancedRecords.push({
-        number: state.advancedIndex + 1,
-        type: "advanced",
-        section: "進階語詞",
-        mode: "文章配合題",
-        prompt: `第 ${state.advancedIndex + 1} 格`,
-        answer: blank.answer,
+        number: state.advancedRecords.length + 1,
+        type: isCloze ? "advanced-cloze" : "advanced-knowledge",
+        section: task.section || "進階語詞",
+        mode: task.mode || "文章配合題",
+        prompt: task.prompt || `第 ${state.advancedIndex + 1} 格`,
+        answer: task.answer,
         choice,
         correct,
-        hint: blank.hint,
+        hint: task.hint,
         passageId: state.advancedChallenge.id
       });
-      renderAdvancedPassage();
+      if (isCloze) renderAdvancedPassage();
       playSound(correct ? "correct" : "wrong");
       speakFeedback(correct);
-      showEncouragement(correct ? ["讀懂前後文了！", "語詞用得很準！", "你找到線索了！"][state.advancedIndex % 3] : "沒關係，再看一次提示");
+      showEncouragement(correct ? (isCloze ? ["讀懂前後文了！", "語詞用得很準！", "你找到線索了！"][state.advancedIndex % 3] : "分析得很仔細！") : "沒關係，再看一次提示");
       if (correct) celebrate();
       const feedback = $("#advanced-feedback");
       feedback.className = `advanced-feedback ${correct ? "good" : "needs"}`;
-      feedback.innerHTML = `<div><strong>${correct ? "答對了！" : `答案是「${blank.answer}」`}</strong><p>${blank.hint}</p></div><span class="ai-pet" data-pose="${correct ? "correct" : "hint"}" role="img" aria-label="AI 小海獺學習提示"></span><button id="advanced-next-button" class="advanced-next" type="button">${state.advancedIndex === state.advancedChallenge.blanks.length - 1 ? "看進階成果" : "下一格"}</button>`;
+      const nextLabel = isAdvancedLastTask() ? "看進階成果" : (isCloze && state.advancedIndex === state.advancedChallenge.blanks.length - 1 ? "進入知識辨析" : (isCloze ? "下一格" : "下一題"));
+      feedback.innerHTML = `<div><strong>${correct ? "答對了！" : `答案是「${task.answer}」`}</strong><p>${task.hint}</p></div><span class="ai-pet" data-pose="${correct ? "correct" : "hint"}" role="img" aria-label="AI 小海獺學習提示"></span><button id="advanced-next-button" class="advanced-next" type="button">${nextLabel}</button>`;
       $("#advanced-next-button").addEventListener("click", moveAdvancedNext);
       $("#advanced-next-button").focus();
-      requestAiHint(blank.answer, choice, correct, feedback);
+      requestAiHint(task.answer, choice, correct, feedback);
     }
 
     function moveAdvancedNext() {
-      if (state.advancedIndex < state.advancedChallenge.blanks.length - 1) {
+      const tasks = getAdvancedTasks();
+      if (state.advancedIndex < tasks.length - 1) {
         state.advancedIndex += 1;
+        renderAdvancedQuestion();
+      } else if (state.advancedStage === "cloze") {
+        state.advancedStage = "knowledge";
+        state.advancedIndex = 0;
+        showEncouragement("語詞配合完成，進入知識辨析！");
         renderAdvancedQuestion();
       } else {
         finishAdvancedChallenge();
@@ -945,7 +1127,7 @@
       $("#result-copy").textContent = reason === "timeout"
         ? "時間到囉！先看看你已經記住哪些生字和語詞。"
         : reason === "advanced"
-          ? "基礎複習 100 分！你也完成了語詞文章配合挑戰。"
+          ? "基礎複習 100 分！你完成了拖拉語詞、分區辨析、文體和主旨挑戰。"
           : "你已經看過本課 15 個生字，也用圖片複習了 5 個動詞語詞。20 題全部答對，就會解鎖最後的短文語詞配合題。";
       if (reason === "complete" || reason === "advanced") {
         playSound("complete");
@@ -977,7 +1159,9 @@
       $("#student-code").value = state.code;
       state.secondsLeft = 300;
       state.advancedChallenge = null;
+      state.advancedStage = "cloze";
       state.advancedIndex = 0;
+      state.selectedAdvancedChoice = "";
       state.advancedRecords = [];
       state.advancedStarted = false;
       state.baseScore = 0;
@@ -987,13 +1171,16 @@
     }
 
     $("#login-form").addEventListener("submit", startQuiz);
+    document.querySelectorAll(".pet-call-button").forEach((button) => button.addEventListener("click", () => callPet(button)));
     $("#retry-button").addEventListener("click", () => {
       state.items = makeQuizItems();
       state.index = 0;
       state.records = [];
       state.startedAt = new Date().toISOString();
       state.advancedChallenge = null;
+      state.advancedStage = "cloze";
       state.advancedIndex = 0;
+      state.selectedAdvancedChoice = "";
       state.advancedRecords = [];
       state.advancedStarted = false;
       state.baseScore = 0;
