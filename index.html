@@ -195,7 +195,7 @@
     .result-kicker { margin-bottom: 8px; color: var(--aqua-dark); font-size: 14px; font-weight: 900; letter-spacing: .1em; }
     .result-card h2 { margin-bottom: 4px; font-size: clamp(34px, 6vw, 54px); letter-spacing: -.07em; }
     .result-copy { margin-bottom: 26px; color: var(--ink-soft); }
-    .score-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 28px; }
+    .score-board { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 28px; }
     .score-cell { padding: 17px 10px; border-radius: 16px; background: #f0f7f1; }
     .score-cell.total { background: #fff0d0; }
     .score-cell strong { display: block; font-family: Nunito, sans-serif; font-size: 31px; line-height: 1; }
@@ -212,6 +212,29 @@
     .submit-status { min-height: 22px; margin: 18px 0 0; color: var(--aqua-dark); font-size: 13px; font-weight: 700; }
     .submit-status.pending { color: var(--ink-soft); }
     .submit-status.error { color: var(--coral); }
+
+    .advanced-card { max-width: 960px; margin: 24px auto 0; padding: clamp(23px, 4vw, 46px); }
+    .challenge-badge { padding: 8px 12px; border-radius: 99px; background: #fff0d3; color: #8a5a0a; font-size: 12px; font-weight: 900; }
+    .advanced-intro { margin: 0 0 20px; color: var(--ink-soft); line-height: 1.7; }
+    .passage-panel { margin-bottom: 22px; padding: 22px 24px; border: 2px solid #d9ece8; border-radius: 20px; background: linear-gradient(145deg, #e9f8f4, #fff6dd); }
+    .passage-title { margin: 0 0 10px; color: var(--aqua-dark); font-size: 20px; font-weight: 900; }
+    .passage-text { margin: 0; font-size: 22px; line-height: 2; }
+    .passage-blank { display: inline-block; min-width: 78px; margin: 0 3px; padding: 0 7px; border-bottom: 3px solid var(--aqua); color: var(--aqua-dark); font-weight: 900; text-align: center; }
+    .passage-blank.current { background: #fff; border-radius: 8px 8px 0 0; box-shadow: 0 3px 0 var(--gold); }
+    .passage-blank.filled { border-bottom-color: var(--ink); color: var(--ink); }
+    .advanced-question { margin: 0 0 14px; color: var(--ink); font-size: 17px; font-weight: 900; }
+    .advanced-choice-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .advanced-choice { min-height: 64px; padding: 10px 14px; border: 2px solid var(--line); border-radius: 16px; background: #fff; color: var(--ink); font-size: 21px; font-weight: 900; transition: transform .16s, border-color .16s, background .16s; }
+    .advanced-choice:hover:not(:disabled), .advanced-choice:focus-visible:not(:disabled) { transform: translateY(-3px); border-color: var(--aqua); background: #edfbf7; }
+    .advanced-choice:disabled { cursor: default; opacity: .72; }
+    .advanced-choice.is-correct { border-color: var(--aqua); background: #ddf6ed; color: var(--aqua-dark); opacity: 1; }
+    .advanced-choice.is-wrong { border-color: var(--coral); background: #fff0ed; color: #a84e42; opacity: 1; }
+    .advanced-feedback { display: flex; min-height: 73px; align-items: flex-start; justify-content: space-between; gap: 16px; margin-top: 18px; padding: 16px 18px; border-radius: 16px; background: #f5f6f0; color: var(--ink-soft); line-height: 1.65; }
+    .advanced-feedback strong { display: block; color: var(--ink); font-size: 16px; }
+    .advanced-feedback p { margin: 0; font-size: 14px; }
+    .advanced-feedback.good { background: #e1f7ed; }
+    .advanced-feedback.needs { background: #fff0df; }
+    .advanced-next { flex: 0 0 auto; min-height: 42px; padding: 8px 16px; border: 0; border-radius: 11px; background: var(--ink); color: #fff; font-size: 14px; font-weight: 900; }
 
     .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
     :focus-visible { outline: 4px solid rgba(238, 116, 97, .44); outline-offset: 3px; }
@@ -236,6 +259,11 @@
       .answer-option, .answer-option.meaning-option { min-height: 59px; }
       .feedback { flex-direction: column; }
       .next-button { width: 100%; }
+      .advanced-choice-grid { grid-template-columns: 1fr; }
+      .advanced-feedback { flex-direction: column; }
+      .advanced-next { width: 100%; }
+      .passage-panel { padding: 18px 16px; }
+      .passage-text { font-size: 19px; }
       .score-board { grid-template-columns: repeat(2, 1fr); }
       .result-details { overflow-x: auto; }
       .result-details table { min-width: 610px; }
@@ -328,6 +356,33 @@
         </article>
       </section>
 
+      <section id="advanced-screen" class="screen" aria-labelledby="advanced-title">
+        <div class="quiz-header">
+          <div>
+            <p class="eyebrow">最後挑戰・語詞應用</p>
+            <h2 id="advanced-title">讀文章找出適當語詞</h2>
+          </div>
+          <div class="quiz-tools">
+            <span id="advanced-student-code" class="student-code"></span>
+            <span class="challenge-badge">基礎 100 分解鎖</span>
+          </div>
+        </div>
+
+        <article class="advanced-card">
+          <p class="advanced-intro">太棒了！你已經完成基礎複習。讀一讀短文，從語詞寶箱選出最適合的詞語，完成最後挑戰。</p>
+          <div class="passage-panel">
+            <p id="advanced-passage-title" class="passage-title"></p>
+            <p id="advanced-passage-text" class="passage-text"></p>
+          </div>
+          <p id="advanced-question" class="advanced-question"></p>
+          <div id="advanced-choice-grid" class="advanced-choice-grid" role="group" aria-label="進階語詞選項"></div>
+          <div id="advanced-feedback" class="advanced-feedback" aria-live="polite">
+            <div><strong>讀讀前後文再作答</strong><p>想想哪個語詞最符合句子的意思。</p></div>
+            <button id="advanced-next-button" class="advanced-next" type="button" hidden>下一格</button>
+          </div>
+        </article>
+      </section>
+
       <section id="result-screen" class="screen" aria-labelledby="result-title">
         <article class="result-card">
           <p class="result-kicker">這次的學習足跡</p>
@@ -338,6 +393,7 @@
             <div class="score-cell"><strong id="correct-count">0</strong><span>答對題數</span></div>
             <div class="score-cell"><strong id="char-correct">0</strong><span>生字答對／15</span></div>
             <div class="score-cell"><strong id="word-correct">0</strong><span>語詞答對／5</span></div>
+            <div class="score-cell"><strong id="advanced-score">—</strong><span>進階分數／100</span></div>
           </div>
           <div class="result-details">
             <table>
@@ -357,7 +413,7 @@
 
   <div id="encouragement" class="encouragement" aria-live="polite"></div>
 
-  <script src="app-config.js?v=20260728-2"></script>
+  <script src="app-config.js?v=20260729-1"></script>
   <script>
     // URL 統一放在 app-config.js，避免修改題目程式。
     const APP_SCRIPT_URL = window.APP_SCRIPT_URL || "";
@@ -388,9 +444,39 @@
       { character: "煩", bopomofo: "ㄈㄢˊ", meaning: "心裡著急不安" }
     ];
 
+    const advancedChallenges = [
+      {
+        id: "word-journey",
+        title: "海邊的語詞旅行",
+        text: "放假時，我們到海邊。弟弟先下水{{1}}，我踩著直排輪在木板道上{{2}}。抬頭看見海鷗在藍天白雲間{{3}}，那不是只在一個地方遊玩，而是自由地在天地之間飛翔。回家時，我{{4}}向爸爸揮手，心裡的{{5}}也消失了。",
+        blanks: [
+          { answer: "游泳", choices: ["游泳", "遊玩", "滑行"], hint: "想想身體在水裡用手腳划動前進。" },
+          { answer: "滑行", choices: ["滑行", "遨遊", "緩緩"], hint: "想想直排輪在地面上滑動前進，不是用走的。" },
+          { answer: "遨遊", choices: ["遨遊", "遊玩", "游泳"], hint: "這裡不是在固定地方玩，而是在寬廣的天地之間自由飛翔。" },
+          { answer: "轉身", choices: ["轉身", "滑行", "遨遊"], hint: "想想身體回轉到另一個方向，再向爸爸揮手。" },
+          { answer: "煩惱", choices: ["煩惱", "遊玩", "緩緩"], hint: "想想原本擔心、不開心的心情，後來被快樂的回憶帶走了。" }
+        ]
+      }
+    ];
+
     const $ = (selector) => document.querySelector(selector);
-    const screens = { start: $("#start-screen"), quiz: $("#quiz-screen"), result: $("#result-screen") };
-    const state = { code: "", items: [], index: 0, records: [], startedAt: "", secondsLeft: 300, timerId: null, soundOn: true, audioContext: null };
+    const screens = { start: $("#start-screen"), quiz: $("#quiz-screen"), advanced: $("#advanced-screen"), result: $("#result-screen") };
+    const state = {
+      code: "",
+      items: [],
+      index: 0,
+      records: [],
+      startedAt: "",
+      secondsLeft: 300,
+      timerId: null,
+      soundOn: true,
+      audioContext: null,
+      advancedChallenge: null,
+      advancedIndex: 0,
+      advancedRecords: [],
+      advancedStarted: false,
+      baseScore: 0
+    };
 
     function shuffle(items) {
       return [...items].sort(() => Math.random() - .5);
@@ -580,6 +666,92 @@
       $("#choice-grid").querySelectorAll(".answer-option").forEach((button) => button.addEventListener("click", () => selectAnswer(button, item)));
     }
 
+    function renderAdvancedPassage() {
+      const challenge = state.advancedChallenge;
+      $("#advanced-passage-text").innerHTML = challenge.text.replace(/\{\{(\d+)\}\}/g, (_, marker) => {
+        const blankIndex = Number(marker) - 1;
+        const record = state.advancedRecords[blankIndex];
+        const isCurrent = blankIndex === state.advancedIndex;
+        const value = record ? record.choice : (isCurrent ? "？" : "＿＿");
+        const classes = ["passage-blank", record ? "filled" : "", isCurrent ? "current" : ""].filter(Boolean).join(" ");
+        return `<span class="${classes}">${value}</span>`;
+      });
+    }
+
+    function renderAdvancedQuestion() {
+      const challenge = state.advancedChallenge;
+      const blank = challenge.blanks[state.advancedIndex];
+      $("#advanced-passage-title").textContent = challenge.title;
+      $("#advanced-question").textContent = `第 ${state.advancedIndex + 1} 格／共 ${challenge.blanks.length} 格：選出最適合的語詞。`;
+      $("#advanced-choice-grid").innerHTML = shuffle(blank.choices).map((choice) => `<button class="advanced-choice" type="button" data-answer="${choice}">${choice}</button>`).join("");
+      $("#advanced-feedback").className = "advanced-feedback";
+      $("#advanced-feedback").innerHTML = `<div><strong>讀讀前後文再作答</strong><p>想想哪個語詞最符合句子的意思。</p></div><button id="advanced-next-button" class="advanced-next" type="button" hidden>下一格</button>`;
+      $("#advanced-choice-grid").querySelectorAll(".advanced-choice").forEach((button) => button.addEventListener("click", () => selectAdvancedAnswer(button, blank)));
+      renderAdvancedPassage();
+    }
+
+    function startAdvancedChallenge() {
+      stopTimer();
+      state.advancedChallenge = advancedChallenges[Math.floor(Math.random() * advancedChallenges.length)];
+      state.advancedIndex = 0;
+      state.advancedRecords = [];
+      state.advancedStarted = true;
+      $("#advanced-student-code").textContent = `代碼：${state.code}`;
+      showScreen("advanced");
+      playSound("complete");
+      celebrate();
+      showEncouragement("基礎全對！進階挑戰開始！");
+      renderAdvancedQuestion();
+    }
+
+    function selectAdvancedAnswer(button, blank) {
+      const choice = button.dataset.answer;
+      const correct = choice === blank.answer;
+      $("#advanced-choice-grid").querySelectorAll(".advanced-choice").forEach((option) => {
+        option.disabled = true;
+        if (option.dataset.answer === blank.answer) option.classList.add("is-correct");
+      });
+      if (!correct) button.classList.add("is-wrong");
+      state.advancedRecords.push({
+        number: state.advancedIndex + 1,
+        type: "advanced",
+        section: "進階語詞",
+        mode: "文章配合題",
+        prompt: `第 ${state.advancedIndex + 1} 格`,
+        answer: blank.answer,
+        choice,
+        correct,
+        hint: blank.hint,
+        passageId: state.advancedChallenge.id
+      });
+      renderAdvancedPassage();
+      playSound(correct ? "correct" : "wrong");
+      showEncouragement(correct ? ["讀懂前後文了！", "語詞用得很準！", "你找到線索了！"][state.advancedIndex % 3] : "沒關係，再看一次提示");
+      if (correct) celebrate();
+      const feedback = $("#advanced-feedback");
+      feedback.className = `advanced-feedback ${correct ? "good" : "needs"}`;
+      feedback.innerHTML = `<div><strong>${correct ? "答對了！" : `答案是「${blank.answer}」`}</strong><p>${blank.hint}</p></div><button id="advanced-next-button" class="advanced-next" type="button">${state.advancedIndex === state.advancedChallenge.blanks.length - 1 ? "看進階成果" : "下一格"}</button>`;
+      $("#advanced-next-button").addEventListener("click", moveAdvancedNext);
+      $("#advanced-next-button").focus();
+      requestAiHint(blank.answer, choice, correct, feedback);
+    }
+
+    function moveAdvancedNext() {
+      if (state.advancedIndex < state.advancedChallenge.blanks.length - 1) {
+        state.advancedIndex += 1;
+        renderAdvancedQuestion();
+      } else {
+        finishAdvancedChallenge();
+      }
+    }
+
+    function finishAdvancedChallenge() {
+      playSound("complete");
+      celebrate();
+      showEncouragement("最後挑戰完成！");
+      showResults("advanced");
+    }
+
     function selectAnswer(button, item) {
       const choice = button.dataset.answer;
       const correct = choice === item.answer;
@@ -607,6 +779,7 @@
       feedback.innerHTML = `<div><strong>${correct ? "答對了！" : `先記起來：答案是「${item.displayAnswer}」`}</strong><p>${item.hint}</p></div><button id="next-button" class="next-button" type="button">${state.index === state.items.length - 1 ? "看我的學習成果" : "下一題"}</button>`;
       $("#next-button").addEventListener("click", moveNext);
       $("#next-button").focus();
+      requestAiHint(item.displayAnswer, choice, correct, feedback);
     }
 
     function moveNext() {
@@ -688,27 +861,72 @@
       }
     }
 
+    async function requestAiHint(word, choice, correct, target) {
+      if (!APP_SCRIPT_URL) return;
+      try {
+        const params = new URLSearchParams({ action: "aiHint", word, choice, correct: String(correct) });
+        const response = await fetch(`${APP_SCRIPT_URL}?${params.toString()}&t=${Date.now()}`, { cache: "no-store" });
+        const data = await response.json();
+        const message = target.querySelector("strong");
+        const hint = target.querySelector("p");
+        if (data.encouragement) message.textContent = data.source === "ai" ? `AI小老師：${data.encouragement}` : data.encouragement;
+        if (data.hint) hint.textContent = data.hint;
+      } catch (error) {
+        // 保留老師預設提示，AI連線失敗時遊戲仍可繼續。
+      }
+    }
+
     function showResults(reason = "complete") {
       stopTimer();
       const correct = state.records.filter((record) => record.correct).length;
       const characterRecords = state.records.filter((record) => record.section === "生字");
       const vocabularyRecords = state.records.filter((record) => record.section === "語詞");
-      const score = Math.round((correct / state.records.length) * 100);
+      const baseScore = Math.round((correct / state.records.length) * 100);
+      const advancedCorrect = state.advancedRecords.filter((record) => record.correct).length;
+      const advancedTotal = state.advancedRecords.length;
+      const advancedScore = advancedTotal ? Math.round((advancedCorrect / advancedTotal) * 100) : 0;
+      state.baseScore = baseScore;
+      if (reason === "complete" && baseScore === 100 && !state.advancedStarted) {
+        startAdvancedChallenge();
+        return;
+      }
       $("#progress-value").style.width = "100%";
       $("#progress-percent").textContent = "100%";
-      $("#total-score").textContent = score;
+      $("#total-score").textContent = baseScore;
       $("#correct-count").textContent = correct;
       $("#char-correct").textContent = `${characterRecords.filter((record) => record.correct).length}`;
       $("#word-correct").textContent = `${vocabularyRecords.filter((record) => record.correct).length}`;
-      $("#result-table-body").innerHTML = state.records.map((record) => `<tr><td>${record.number}</td><td>${record.section}</td><td>${record.mode}</td><td>${record.choice}</td><td class="${record.correct ? "status-correct" : "status-wrong"}">${record.correct ? "答對" : "再看一次"}</td></tr>`).join("");
-      $("#result-copy").textContent = reason === "timeout" ? "時間到囉！先看看你已經記住哪些生字和語詞。" : "你已經看過本課 15 個生字，也用圖片複習了 5 個動詞語詞。";
-      if (reason === "complete") {
+      $("#advanced-score").textContent = advancedTotal ? advancedScore : "—";
+      const baseRows = state.records.map((record) => `<tr><td>${record.number}</td><td>${record.section}</td><td>${record.mode}</td><td>${record.choice}</td><td class="${record.correct ? "status-correct" : "status-wrong"}">${record.correct ? "答對" : "再看一次"}</td></tr>`);
+      const advancedRows = state.advancedRecords.map((record) => `<tr><td>進階${record.number}</td><td>${record.section}</td><td>${record.mode}</td><td>${record.choice}</td><td class="${record.correct ? "status-correct" : "status-wrong"}">${record.correct ? "答對" : "再看一次"}</td></tr>`);
+      $("#result-table-body").innerHTML = [...baseRows, ...advancedRows].join("");
+      $("#result-copy").textContent = reason === "timeout"
+        ? "時間到囉！先看看你已經記住哪些生字和語詞。"
+        : reason === "advanced"
+          ? "基礎複習 100 分！你也完成了語詞文章配合挑戰。"
+          : "你已經看過本課 15 個生字，也用圖片複習了 5 個動詞語詞。";
+      if (reason === "complete" || reason === "advanced") {
         playSound("complete");
         celebrate();
-        showEncouragement("複習完成，你很努力！");
+        if (reason === "complete") showEncouragement("複習完成，你很努力！");
       }
       showScreen("result");
-      submitResult({ code: state.code, score, correct, wrong: state.records.length - correct, total: state.records.length, startedAt: state.startedAt, completedAt: new Date().toISOString(), records: state.records });
+      submitResult({
+        code: state.code,
+        score: baseScore,
+        baseScore,
+        correct,
+        wrong: state.records.length - correct,
+        total: state.records.length,
+        advancedScore,
+        advancedCorrect,
+        advancedTotal,
+        advancedPassageId: state.advancedChallenge ? state.advancedChallenge.id : "",
+        startedAt: state.startedAt,
+        completedAt: new Date().toISOString(),
+        records: state.records,
+        advancedRecords: state.advancedRecords
+      });
     }
 
     function resetToHome() {
@@ -716,6 +934,11 @@
       $("#login-error").textContent = "";
       $("#student-code").value = state.code;
       state.secondsLeft = 300;
+      state.advancedChallenge = null;
+      state.advancedIndex = 0;
+      state.advancedRecords = [];
+      state.advancedStarted = false;
+      state.baseScore = 0;
       updateTimer();
       showScreen("start");
       $("#student-code").focus();
@@ -727,6 +950,11 @@
       state.index = 0;
       state.records = [];
       state.startedAt = new Date().toISOString();
+      state.advancedChallenge = null;
+      state.advancedIndex = 0;
+      state.advancedRecords = [];
+      state.advancedStarted = false;
+      state.baseScore = 0;
       showScreen("quiz");
       startTimer();
       playSound("start");
