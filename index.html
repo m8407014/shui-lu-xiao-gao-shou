@@ -129,8 +129,6 @@
     .ai-pet-intro .ai-pet { flex: 0 0 auto; }
     .ai-pet-intro strong { display: block; margin-bottom: 3px; color: var(--aqua-dark); font-size: 14px; }
     .ai-pet-intro p { margin: 0; color: var(--ink-soft); font-size: 12px; line-height: 1.55; }
-    .pet-call-button { flex: 0 0 auto; min-height: 38px; padding: 7px 11px; border: 2px solid var(--aqua-dark); border-radius: 11px; background: #fff; color: var(--aqua-dark); font-size: 12px; font-weight: 900; }
-    .pet-call-button:hover, .pet-call-button:focus-visible { background: #ddf6ed; transform: translateY(-2px); }
     .field-label { display: block; margin-bottom: 9px; font-size: 14px; font-weight: 900; }
     .code-input { width: 100%; padding: 15px 16px; border: 2px solid var(--line); border-radius: 14px; outline: 0; background: #fff; color: var(--ink); font-size: 20px; font-weight: 900; letter-spacing: .06em; transition: border-color .2s, box-shadow .2s; }
     .code-input:focus { border-color: var(--aqua); box-shadow: 0 0 0 4px rgba(20, 158, 154, .15); }
@@ -337,8 +335,7 @@
               <p class="lead">請輸入老師給你的班級座號代碼。這份練習會記錄作答結果，但不用填寫姓名。</p>
               <div class="ai-pet-intro">
                 <span class="ai-pet" data-pose="cheer" role="img" aria-label="AI 小海獺小老師正在加油"></span>
-                <div><strong>AI 小海獺小老師陪你學</strong><p>答錯也沒關係，牠會用生活畫面給你小提示；按下呼叫按鈕，說「小海獺，請幫我」。</p></div>
-                <button class="pet-call-button" type="button">呼叫小海獺</button>
+                <div><strong>AI 小海獺小老師陪你學</strong><p>第一階段先專心熟悉生字和語詞，答題時會用高低音效鼓勵你。</p></div>
               </div>
               <form id="login-form" novalidate>
                 <p id="code-help" class="code-help"><strong>登入格式：5 碼數字</strong>前三碼是班級，後兩碼是代號，例如：40402。</p>
@@ -366,7 +363,6 @@
           </div>
           <div class="quiz-tools">
             <span id="quiz-student-code" class="student-code"></span>
-            <button class="pet-call-button" type="button">呼叫小海獺</button>
             <button id="sound-toggle" class="sound-toggle" type="button" aria-pressed="true">音效開</button>
             <div id="timer-box" class="timer-box" aria-live="polite"><span>剩餘時間</span><strong id="timer-value">05:00</strong></div>
           </div>
@@ -400,7 +396,6 @@
           </div>
           <div class="quiz-tools">
             <span id="advanced-student-code" class="student-code"></span>
-            <button class="pet-call-button" type="button">呼叫小海獺</button>
             <span class="challenge-badge">基礎 100 分解鎖</span>
           </div>
         </div>
@@ -666,42 +661,18 @@
       window.speechSynthesis.speak(utterance);
     }
 
-    function speakFeedback(correct) {
-      speakText(correct ? "正確！很棒！" : "錯誤！加油！");
-    }
-
-    function callPet(button) {
-      const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!Recognition) {
-        speakText("我在這裡！請按題目下方的提示，我會陪你找線索。");
-        showEncouragement("目前裝置不支援語音聆聽，仍可使用語音播放");
-        return;
-      }
-      const recognition = new Recognition();
-      recognition.lang = "zh-TW";
-      recognition.interimResults = false;
-      recognition.maxAlternatives = 1;
-      button.disabled = true;
-      button.textContent = "正在聽…";
-      recognition.onresult = (event) => {
-        const heard = event.results[0][0].transcript.trim();
-        if (/小海獺|海獺|提示/.test(heard)) {
-          speakText("我在這裡！先找題目裡的線索，再試一次，你可以的！");
-          showEncouragement("小海獺聽見你了！");
-        } else {
-          speakText(`我聽到「${heard}」。請說小海獺，或先看看題目提示。`);
-          showEncouragement("再叫我一次");
-        }
+    function getAdvancedThinkingPrompt(task) {
+      if (!task.mode || task.mode === "文章配合題") return "想一想前後文描述的是動作、速度，還是心情。";
+      const prompts = {
+        "同音異字": "想一想，這個讀音要和哪個意思配在一起。",
+        "同字異義": "想一想，把這個字放回語詞後，在句子中表示什麼意思。",
+        "相近字": "想一想，字的部件和語詞意思是否都對得上。",
+        "相近詞": "想一想，這個詞是自由到處遊歷，還是只在一個地方玩。",
+        "相異詞": "想一想，句子要說慢慢前進、回轉身體，還是自由遊歷。",
+        "文體": "想一想，課文的分行、節奏和想像比較像哪一類文章。",
+        "主旨": "想一想，兩首詩共同帶給讀者什麼感受。"
       };
-      recognition.onerror = () => {
-        speakText("我沒有聽清楚，請再按一次呼叫小海獺。");
-        showEncouragement("再試一次");
-      };
-      recognition.onend = () => {
-        button.disabled = false;
-        button.textContent = "呼叫小海獺";
-      };
-      recognition.start();
+      return prompts[task.mode] || "想一想題目中的關鍵線索，再做一次判斷。";
     }
 
     function showEncouragement(message) {
@@ -924,7 +895,7 @@
       const isCloze = state.advancedStage === "cloze";
       $("#advanced-choice-grid").querySelectorAll(".advanced-choice").forEach((option) => {
         option.disabled = true;
-        if (option.dataset.answer === task.answer) option.classList.add("is-correct");
+        if (correct && option.dataset.answer === task.answer) option.classList.add("is-correct");
       });
       if (!correct) $("#advanced-choice-grid").querySelector(`[data-answer="${choice}"]`).classList.add("is-wrong");
       state.advancedRecords.push({
@@ -941,16 +912,18 @@
       });
       if (isCloze) renderAdvancedPassage();
       playSound(correct ? "correct" : "wrong");
-      speakFeedback(correct);
+      if (!correct) speakText(`你確定嗎？${getAdvancedThinkingPrompt(task)}`);
       showEncouragement(correct ? (isCloze ? ["讀懂前後文了！", "語詞用得很準！", "你找到線索了！"][state.advancedIndex % 3] : "分析得很仔細！") : "沒關係，再看一次提示");
       if (correct) celebrate();
       const feedback = $("#advanced-feedback");
       feedback.className = `advanced-feedback ${correct ? "good" : "needs"}`;
       const nextLabel = isAdvancedLastTask() ? "看進階成果" : (isCloze && state.advancedIndex === state.advancedChallenge.blanks.length - 1 ? "進入知識辨析" : (isCloze ? "下一格" : "下一題"));
-      feedback.innerHTML = `<div><strong>${correct ? "答對了！" : `答案是「${task.answer}」`}</strong><p>${task.hint}</p></div><span class="ai-pet" data-pose="${correct ? "correct" : "hint"}" role="img" aria-label="AI 小海獺學習提示"></span><button id="advanced-next-button" class="advanced-next" type="button">${nextLabel}</button>`;
+      const feedbackTitle = correct ? "答對了！" : "你確定嗎？";
+      const feedbackHint = correct ? task.hint : getAdvancedThinkingPrompt(task);
+      feedback.innerHTML = `<div><strong>${feedbackTitle}</strong><p>${feedbackHint}</p></div><span class="ai-pet" data-pose="${correct ? "correct" : "hint"}" role="img" aria-label="AI 小海獺學習提示"></span><button id="advanced-next-button" class="advanced-next" type="button">${nextLabel}</button>`;
       $("#advanced-next-button").addEventListener("click", moveAdvancedNext);
       $("#advanced-next-button").focus();
-      requestAiHint(task.answer, choice, correct, feedback);
+      if (!correct) requestAiHint(task.answer, choice, false, feedback);
     }
 
     function moveAdvancedNext() {
@@ -995,7 +968,6 @@
         hint: item.hint
       });
       playSound(correct ? "correct" : "wrong");
-      speakFeedback(correct);
       showEncouragement(correct ? ["做得很好！", "你抓到重點了！", "字音記住了！", "看圖很準！"][state.index % 4] : "沒關係，提示在這裡");
       if (correct) celebrate();
       const feedback = $("#feedback");
@@ -1003,7 +975,6 @@
       feedback.innerHTML = `<div><strong>${correct ? "答對了！" : `先記起來：答案是「${item.displayAnswer}」`}</strong><p>${item.hint}</p></div><span class="ai-pet" data-pose="${correct ? "correct" : "hint"}" role="img" aria-label="AI 小海獺學習提示"></span><button id="next-button" class="next-button" type="button">${state.index === state.items.length - 1 ? "看我的學習成果" : "下一題"}</button>`;
       $("#next-button").addEventListener("click", moveNext);
       $("#next-button").focus();
-      requestAiHint(item.displayAnswer, choice, correct, feedback);
     }
 
     function moveNext() {
@@ -1091,9 +1062,7 @@
         const params = new URLSearchParams({ action: "aiHint", word, choice, correct: String(correct) });
         const response = await fetch(`${APP_SCRIPT_URL}?${params.toString()}&t=${Date.now()}`, { cache: "no-store" });
         const data = await response.json();
-        const message = target.querySelector("strong");
         const hint = target.querySelector("p");
-        if (data.encouragement) message.textContent = data.source === "ai" ? `AI小老師：${data.encouragement}` : data.encouragement;
         if (data.hint) hint.textContent = data.hint;
       } catch (error) {
         // 保留老師預設提示，AI連線失敗時遊戲仍可繼續。
@@ -1128,7 +1097,7 @@
         ? "時間到囉！先看看你已經記住哪些生字和語詞。"
         : reason === "advanced"
           ? "基礎複習 100 分！你完成了拖拉語詞、分區辨析、文體和主旨挑戰。"
-          : "你已經看過本課 15 個生字，也用圖片複習了 5 個動詞語詞。20 題全部答對，就會解鎖最後的短文語詞配合題。";
+          : "你已經看過本課 15 個生字，也用圖片複習了 5 個動詞語詞。20 題全部答對，就會解鎖拖拉語詞和進階知識題。";
       if (reason === "complete" || reason === "advanced") {
         playSound("complete");
         celebrate();
@@ -1171,7 +1140,6 @@
     }
 
     $("#login-form").addEventListener("submit", startQuiz);
-    document.querySelectorAll(".pet-call-button").forEach((button) => button.addEventListener("click", () => callPet(button)));
     $("#retry-button").addEventListener("click", () => {
       state.items = makeQuizItems();
       state.index = 0;
