@@ -651,10 +651,12 @@
       if (!state.soundOn || !("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) return;
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = "zh-TW";
-      utterance.rate = .9;
-      utterance.pitch = 1.25;
+      utterance.rate = .8;
+      utterance.pitch = 1.45;
+      utterance.volume = 1;
       const voices = window.speechSynthesis.getVoices();
-      const chineseVoice = voices.find((voice) => /zh[-_]TW|cmn[-_]TW/i.test(voice.lang))
+      const chineseVoice = voices.find((voice) => /zh[-_]TW|cmn[-_]TW/i.test(voice.lang) && /girl|female|mei|ting|美|女|小/i.test(voice.name))
+        || voices.find((voice) => /zh[-_]TW|cmn[-_]TW/i.test(voice.lang))
         || voices.find((voice) => /中文|國語|Chinese|Google/i.test(voice.name));
       if (chineseVoice) utterance.voice = chineseVoice;
       window.speechSynthesis.cancel();
