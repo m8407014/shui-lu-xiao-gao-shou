@@ -125,6 +125,10 @@
     .login-card { display: flex; min-height: 635px; flex-direction: column; justify-content: space-between; padding: 33px; }
     .login-card h2 { margin-bottom: 10px; font-size: 29px; letter-spacing: -.05em; }
     .lead { margin-bottom: 30px; color: var(--ink-soft); line-height: 1.75; }
+    .ai-pet-intro { display: flex; align-items: center; gap: 12px; margin: -10px 0 18px; padding: 10px 12px; border: 2px solid #d9ece8; border-radius: 17px; background: linear-gradient(135deg, #effbf8, #fff6df); }
+    .ai-pet-intro .ai-pet { flex: 0 0 auto; }
+    .ai-pet-intro strong { display: block; margin-bottom: 3px; color: var(--aqua-dark); font-size: 14px; }
+    .ai-pet-intro p { margin: 0; color: var(--ink-soft); font-size: 12px; line-height: 1.55; }
     .field-label { display: block; margin-bottom: 9px; font-size: 14px; font-weight: 900; }
     .code-input { width: 100%; padding: 15px 16px; border: 2px solid var(--line); border-radius: 14px; outline: 0; background: #fff; color: var(--ink); font-size: 20px; font-weight: 900; letter-spacing: .06em; transition: border-color .2s, box-shadow .2s; }
     .code-input:focus { border-color: var(--aqua); box-shadow: 0 0 0 4px rgba(20, 158, 154, .15); }
@@ -179,12 +183,24 @@
     .answer-option:disabled { cursor: default; opacity: .72; }
     .answer-option.is-correct { border-color: var(--aqua); background: #ddf6ed; color: var(--aqua-dark); opacity: 1; }
     .answer-option.is-wrong { border-color: var(--coral); background: #fff0ed; color: #a84e42; opacity: 1; }
-    .feedback { display: flex; min-height: 78px; align-items: flex-start; justify-content: space-between; gap: 16px; margin-top: 18px; padding: 16px 18px; border-radius: 16px; background: #f5f6f0; color: var(--ink-soft); line-height: 1.65; }
+    .feedback { position: relative; display: flex; min-height: 78px; align-items: flex-start; justify-content: space-between; gap: 16px; margin-top: 18px; padding: 16px 102px 16px 18px; border-radius: 16px; background: #f5f6f0; color: var(--ink-soft); line-height: 1.65; }
     .feedback strong { display: block; color: var(--ink); font-size: 16px; }
     .feedback p { margin: 0; font-size: 14px; }
     .feedback.good { background: #e1f7ed; }
     .feedback.needs { background: #fff0df; }
     .next-button { flex: 0 0 auto; min-height: 42px; padding: 8px 16px; border: 0; border-radius: 11px; background: var(--ink); color: #fff; font-size: 14px; font-weight: 900; }
+    .ai-pet { display: block; width: 76px; height: 102px; background-image: url("assets/ai-otter-poses.png"); background-repeat: no-repeat; background-size: 400% 200%; background-position: 0 0; filter: drop-shadow(0 5px 5px rgba(24, 52, 77, .16)); animation: pet-float 2.6s ease-in-out infinite; }
+    .ai-pet[data-pose="correct"] { background-position: 33.3333% 0; animation-name: pet-pop; }
+    .ai-pet[data-pose="think"] { background-position: 66.6667% 0; }
+    .ai-pet[data-pose="hint"] { background-position: 100% 0; }
+    .ai-pet[data-pose="surprise"] { background-position: 0 100%; animation-name: pet-pop; }
+    .ai-pet[data-pose="laugh"] { background-position: 33.3333% 100%; animation-name: pet-pop; }
+    .ai-pet[data-pose="shy"] { background-position: 66.6667% 100%; }
+    .ai-pet[data-pose="sleepy"] { background-position: 100% 100%; }
+    .feedback > .ai-pet, .advanced-feedback > .ai-pet { position: absolute; right: 13px; bottom: -5px; }
+    .ai-pet-intro .ai-pet { width: 65px; height: 87px; }
+    @keyframes pet-float { 50% { transform: translateY(-5px) rotate(2deg); } }
+    @keyframes pet-pop { 0%, 100% { transform: scale(1); } 45% { transform: scale(1.08) rotate(-3deg); } }
     .encouragement { position: fixed; z-index: 12; top: 22%; left: 50%; padding: 14px 22px; border: 3px solid var(--ink); border-radius: 18px 18px 18px 5px; background: var(--gold); box-shadow: 5px 5px 0 var(--ink); color: var(--ink); font-size: 19px; font-weight: 900; pointer-events: none; transform: translate(-50%, -8px) scale(.86); opacity: 0; }
     .encouragement.show { animation: cheer-pop .85s ease both; }
     @keyframes cheer-pop { 18% { opacity: 1; transform: translate(-50%, 0) scale(1); } 72% { opacity: 1; transform: translate(-50%, -5px) scale(1); } 100% { opacity: 0; transform: translate(-50%, -30px) scale(.95); } }
@@ -229,7 +245,7 @@
     .advanced-choice:disabled { cursor: default; opacity: .72; }
     .advanced-choice.is-correct { border-color: var(--aqua); background: #ddf6ed; color: var(--aqua-dark); opacity: 1; }
     .advanced-choice.is-wrong { border-color: var(--coral); background: #fff0ed; color: #a84e42; opacity: 1; }
-    .advanced-feedback { display: flex; min-height: 73px; align-items: flex-start; justify-content: space-between; gap: 16px; margin-top: 18px; padding: 16px 18px; border-radius: 16px; background: #f5f6f0; color: var(--ink-soft); line-height: 1.65; }
+    .advanced-feedback { position: relative; display: flex; min-height: 73px; align-items: flex-start; justify-content: space-between; gap: 16px; margin-top: 18px; padding: 16px 102px 16px 18px; border-radius: 16px; background: #f5f6f0; color: var(--ink-soft); line-height: 1.65; }
     .advanced-feedback strong { display: block; color: var(--ink); font-size: 16px; }
     .advanced-feedback p { margin: 0; font-size: 14px; }
     .advanced-feedback.good { background: #e1f7ed; }
@@ -257,10 +273,10 @@
       .quiz-tools { width: 100%; justify-content: space-between; }
       .choice-grid { grid-template-columns: 1fr; }
       .answer-option, .answer-option.meaning-option { min-height: 59px; }
-      .feedback { flex-direction: column; }
+      .feedback { flex-direction: column; padding-right: 96px; }
       .next-button { width: 100%; }
       .advanced-choice-grid { grid-template-columns: 1fr; }
-      .advanced-feedback { flex-direction: column; }
+      .advanced-feedback { flex-direction: column; padding-right: 96px; }
       .advanced-next { width: 100%; }
       .passage-panel { padding: 18px 16px; }
       .passage-text { font-size: 19px; }
@@ -307,6 +323,10 @@
               <p class="eyebrow">學習者登入</p>
               <h2>準備好出發了嗎？</h2>
               <p class="lead">請輸入老師給你的班級座號代碼。這份練習會記錄作答結果，但不用填寫姓名。</p>
+              <div class="ai-pet-intro">
+                <span class="ai-pet" data-pose="cheer" role="img" aria-label="AI 小海獺小老師正在加油"></span>
+                <div><strong>AI 小海獺小老師陪你學</strong><p>答錯也沒關係，牠會用生活畫面給你小提示。</p></div>
+              </div>
               <form id="login-form" novalidate>
                 <label class="field-label" for="student-code">班級座號代碼</label>
                 <input id="student-code" class="code-input" name="student-code" inputmode="text" autocomplete="off" maxlength="20" placeholder="例如：401-08" aria-describedby="code-help login-error" />
@@ -351,6 +371,7 @@
           <div id="choice-grid" class="choice-grid" role="group" aria-label="答案選項"></div>
           <div id="feedback" class="feedback" aria-live="polite">
             <div><strong>看清楚再作答</strong><p>不用急，先想想注音或圖片的意思。</p></div>
+            <span class="ai-pet" data-pose="think" role="img" aria-label="AI 小海獺正在思考"></span>
             <button id="next-button" class="next-button" type="button" hidden>下一題</button>
           </div>
         </article>
@@ -378,6 +399,7 @@
           <div id="advanced-choice-grid" class="advanced-choice-grid" role="group" aria-label="進階語詞選項"></div>
           <div id="advanced-feedback" class="advanced-feedback" aria-live="polite">
             <div><strong>讀讀前後文再作答</strong><p>想想哪個語詞最符合句子的意思。</p></div>
+            <span class="ai-pet" data-pose="think" role="img" aria-label="AI 小海獺正在思考"></span>
             <button id="advanced-next-button" class="advanced-next" type="button" hidden>下一格</button>
           </div>
         </article>
@@ -413,7 +435,7 @@
 
   <div id="encouragement" class="encouragement" aria-live="polite"></div>
 
-  <script src="app-config.js?v=20260729-1"></script>
+  <script src="app-config.js?v=20260729-2"></script>
   <script>
     // URL 統一放在 app-config.js，避免修改題目程式。
     const APP_SCRIPT_URL = window.APP_SCRIPT_URL || "";
@@ -662,7 +684,7 @@
       $("#visual-stage").innerHTML = renderVisual(item.visual);
       $("#choice-grid").innerHTML = item.choices.map((choice) => `<button class="answer-option${item.mode === "看字選意思" ? " meaning-option" : ""}" type="button" data-answer="${choice}">${choice}</button>`).join("");
       $("#feedback").className = "feedback";
-      $("#feedback").innerHTML = `<div><strong>看清楚再作答</strong><p>不用急，先想想注音、國字或圖片的意思。</p></div><button id="next-button" class="next-button" type="button" hidden>下一題</button>`;
+      $("#feedback").innerHTML = `<div><strong>看清楚再作答</strong><p>不用急，先想想注音、國字或圖片的意思。</p></div><span class="ai-pet" data-pose="think" role="img" aria-label="AI 小海獺正在思考"></span><button id="next-button" class="next-button" type="button" hidden>下一題</button>`;
       $("#choice-grid").querySelectorAll(".answer-option").forEach((button) => button.addEventListener("click", () => selectAnswer(button, item)));
     }
 
@@ -685,7 +707,7 @@
       $("#advanced-question").textContent = `第 ${state.advancedIndex + 1} 格／共 ${challenge.blanks.length} 格：選出最適合的語詞。`;
       $("#advanced-choice-grid").innerHTML = shuffle(blank.choices).map((choice) => `<button class="advanced-choice" type="button" data-answer="${choice}">${choice}</button>`).join("");
       $("#advanced-feedback").className = "advanced-feedback";
-      $("#advanced-feedback").innerHTML = `<div><strong>讀讀前後文再作答</strong><p>想想哪個語詞最符合句子的意思。</p></div><button id="advanced-next-button" class="advanced-next" type="button" hidden>下一格</button>`;
+      $("#advanced-feedback").innerHTML = `<div><strong>讀讀前後文再作答</strong><p>想想哪個語詞最符合句子的意思。</p></div><span class="ai-pet" data-pose="think" role="img" aria-label="AI 小海獺正在思考"></span><button id="advanced-next-button" class="advanced-next" type="button" hidden>下一格</button>`;
       $("#advanced-choice-grid").querySelectorAll(".advanced-choice").forEach((button) => button.addEventListener("click", () => selectAdvancedAnswer(button, blank)));
       renderAdvancedPassage();
     }
@@ -730,7 +752,7 @@
       if (correct) celebrate();
       const feedback = $("#advanced-feedback");
       feedback.className = `advanced-feedback ${correct ? "good" : "needs"}`;
-      feedback.innerHTML = `<div><strong>${correct ? "答對了！" : `答案是「${blank.answer}」`}</strong><p>${blank.hint}</p></div><button id="advanced-next-button" class="advanced-next" type="button">${state.advancedIndex === state.advancedChallenge.blanks.length - 1 ? "看進階成果" : "下一格"}</button>`;
+      feedback.innerHTML = `<div><strong>${correct ? "答對了！" : `答案是「${blank.answer}」`}</strong><p>${blank.hint}</p></div><span class="ai-pet" data-pose="${correct ? "correct" : "hint"}" role="img" aria-label="AI 小海獺學習提示"></span><button id="advanced-next-button" class="advanced-next" type="button">${state.advancedIndex === state.advancedChallenge.blanks.length - 1 ? "看進階成果" : "下一格"}</button>`;
       $("#advanced-next-button").addEventListener("click", moveAdvancedNext);
       $("#advanced-next-button").focus();
       requestAiHint(blank.answer, choice, correct, feedback);
@@ -776,7 +798,7 @@
       if (correct) celebrate();
       const feedback = $("#feedback");
       feedback.className = `feedback ${correct ? "good" : "needs"}`;
-      feedback.innerHTML = `<div><strong>${correct ? "答對了！" : `先記起來：答案是「${item.displayAnswer}」`}</strong><p>${item.hint}</p></div><button id="next-button" class="next-button" type="button">${state.index === state.items.length - 1 ? "看我的學習成果" : "下一題"}</button>`;
+      feedback.innerHTML = `<div><strong>${correct ? "答對了！" : `先記起來：答案是「${item.displayAnswer}」`}</strong><p>${item.hint}</p></div><span class="ai-pet" data-pose="${correct ? "correct" : "hint"}" role="img" aria-label="AI 小海獺學習提示"></span><button id="next-button" class="next-button" type="button">${state.index === state.items.length - 1 ? "看我的學習成果" : "下一題"}</button>`;
       $("#next-button").addEventListener("click", moveNext);
       $("#next-button").focus();
       requestAiHint(item.displayAnswer, choice, correct, feedback);
