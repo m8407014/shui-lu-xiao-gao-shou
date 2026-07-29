@@ -1047,11 +1047,20 @@
       }
       status.className = "submit-status pending";
       status.textContent = "正在把成果送回老師的紀錄表……";
+      const requestBody = JSON.stringify(payload);
       try {
+        if (navigator.sendBeacon) {
+          const queued = navigator.sendBeacon(APP_SCRIPT_URL, new Blob([requestBody], { type: "text/plain;charset=utf-8" }));
+          if (queued) {
+            status.className = "submit-status";
+            status.textContent = "成果已送出，請稍後查看老師的「評量紀錄」分頁。";
+            return;
+          }
+        }
         const submitUrl = `${APP_SCRIPT_URL}${APP_SCRIPT_URL.includes("?") ? "&" : "?"}t=${Date.now()}`;
-        await fetch(submitUrl, { method: "POST", mode: "no-cors", cache: "no-store", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload) });
+        await fetch(submitUrl, { method: "POST", mode: "no-cors", cache: "no-store", keepalive: true, headers: { "Content-Type": "text/plain;charset=utf-8" }, body: requestBody });
         status.className = "submit-status";
-        status.textContent = "成果已送回老師的紀錄表。";
+        status.textContent = "成果已送出，請稍後查看老師的「評量紀錄」分頁。";
       } catch (error) {
         status.className = "submit-status error";
         status.textContent = "目前無法連線；成果仍保存在這台裝置，請告訴老師。";
